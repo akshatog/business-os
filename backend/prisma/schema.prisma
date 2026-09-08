@@ -1,0 +1,304 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BusinessType {
+  pharmacy
+  clothing
+  grocery
+}
+
+enum Role {
+  owner
+  manager
+  cashier
+  inventory_staff
+}
+
+enum Unit {
+  piece
+  kg
+  litre
+}
+
+enum SaleStatus {
+  completed
+  voided
+  partially_refunded
+  refunded
+}
+
+enum PaymentMethod {
+  cash
+  upi
+  card
+}
+
+enum PaymentStatus {
+  completed
+  failed
+  refunded
+}
+
+enum StockMovementType {
+  purchase
+  sale
+  return
+  damage
+  adjustment
+  transfer
+}
+
+enum StockMovementReferenceType {
+  sale
+  purchase
+  manual
+}
+
+enum PurchaseStatus {
+  pending
+  received
+}
+
+model Business {
+  id             String         @id @default(uuid()) @db.Uuid
+  name           String
+  businessType   BusinessType
+  address        String
+  gstNumber      String?
+  phone          String
+  email          String?
+  createdAt      DateTime       @default(now())
+
+  users          User[]
+  products       Product[]
+  categories     ProductCategory[]
+  customers      Customer[]
+  suppliers      Supplier[]
+  sales          Sale[]
+  stockMovements StockMovement[]
+  purchases      Purchase[]
+  auditLogs      AuditLog[]
+}
+
+model User {
+  id             String         @id @default(uuid()) @db.Uuid
+  businessId     String         @db.Uuid
+  business       Business       @relation(fields: [businessId], references: [id])
+  name           String
+  email          String
+  passwordHash   String
+  role           Role
+  phone          String?
+  isActive       Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+
+  salesMade          Sale[]
+  stockMovements     StockMovement[]
+  auditLogs          AuditLog[]
+  prescriptionsVerified Prescription[]
+
+  @@unique([businessId, email])
+}
+
+model Product {
+  id                String         @id @default(uuid()) @db.Uuid
+  businessId        String         @db.Uuid
+  business          Business       @relation(fields: [businessId], references: [id])
+  name              String
+  sku               String?
+  barcode           String?
+  categoryId        String?        @db.Uuid
+  category          ProductCategory? @relation(fields: [categoryId], references: [id])
+  priceMinor        Int
+  costPriceMinor    Int
+  taxRatePercent    Decimal        @db.Decimal(5, 2)
+  unit              Unit
+  lowStockThreshold Int
+  imageUrl          String?
+  isActive          Boolean        @default(true)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  saleItems         SaleItem[]
+  stockMovements    StockMovement[]
+  purchaseItems     PurchaseItem[]
+  productBatches    ProductBatch[]
+}
+
+model ProductCategory {
+  id         String   @id @default(uuid()) @db.Uuid
+  businessId String   @db.Uuid
+  business   Business @relation(fields: [businessId], references: [id])
+  name       String
+
+  products   Product[]
+}
+
+model Customer {
+  id         String   @id @default(uuid()) @db.Uuid
+  businessId String   @db.Uuid
+  business   Business @relation(fields: [businessId], references: [id])
+  name       String
+  phone      String?
+  email      String?
+  address    String?
+  createdAt  DateTime @default(now())
+
+  sales      Sale[]
+}
+
+model Supplier {
+  id         String   @id @default(uuid()) @db.Uuid
+  businessId String   @db.Uuid
+  business   Business @relation(fields: [businessId], references: [id])
+  name       String
+  phone      String?
+  email      String?
+  address    String?
+
+  purchases  Purchase[]
+}
+
+model Sale {
+  id                  String         @id @default(uuid()) @db.Uuid
+  businessId          String         @db.Uuid
+  business            Business       @relation(fields: [businessId], references: [id])
+  invoiceNumber       String
+  customerId          String?        @db.Uuid
+  customer            Customer?      @relation(fields: [customerId], references: [id])
+  userId              String         @db.Uuid
+  user                User           @relation(fields: [userId], references: [id])
+  subtotalMinor       Int
+  taxAmountMinor      Int
+  discountAmountMinor Int
+  totalAmountMinor    Int
+  status              SaleStatus
+  createdAt           DateTime       @default(now())
+
+  saleItems           SaleItem[]
+  payments            Payment[]
+  prescriptions       Prescription[]
+
+  @@unique([businessId, invoiceNumber])
+}
+
+model SaleItem {
+  id             String   @id @default(uuid()) @db.Uuid
+  saleId         String   @db.Uuid
+  sale           Sale     @relation(fields: [saleId], references: [id])
+  productId      String   @db.Uuid
+  product        Product  @relation(fields: [productId], references: [id])
+  quantity       Int
+  unitPriceMinor Int
+  discountMinor  Int
+  taxAmountMinor Int
+  lineTotalMinor Int
+  
+  batchId        String?  @db.Uuid
+  batch          ProductBatch? @relation(fields: [batchId], references: [id])
+}
+
+model Payment {
+  id          String        @id @default(uuid()) @db.Uuid
+  saleId      String        @db.Uuid
+  sale        Sale          @relation(fields: [saleId], references: [id])
+  method      PaymentMethod
+  amountMinor Int
+  status      PaymentStatus
+  createdAt   DateTime      @default(now())
+}
+
+model StockMovement {
+  id            String                     @id @default(uuid()) @db.Uuid
+  businessId    String                     @db.Uuid
+  business      Business                   @relation(fields: [businessId], references: [id])
+  productId     String                     @db.Uuid
+  product       Product                    @relation(fields: [productId], references: [id])
+  type          StockMovementType
+  quantity      Int
+  referenceType StockMovementReferenceType?
+  referenceId   String?                    @db.Uuid
+  reason        String?
+  userId        String                     @db.Uuid
+  user          User                       @relation(fields: [userId], references: [id])
+  createdAt     DateTime                   @default(now())
+}
+
+model Purchase {
+  id               String         @id @default(uuid()) @db.Uuid
+  businessId       String         @db.Uuid
+  business         Business       @relation(fields: [businessId], references: [id])
+  supplierId       String         @db.Uuid
+  supplier         Supplier       @relation(fields: [supplierId], references: [id])
+  invoiceNumber    String?
+  totalAmountMinor Int
+  status           PurchaseStatus
+  createdAt        DateTime       @default(now())
+
+  purchaseItems    PurchaseItem[]
+}
+
+model PurchaseItem {
+  id            String   @id @default(uuid()) @db.Uuid
+  purchaseId    String   @db.Uuid
+  purchase      Purchase @relation(fields: [purchaseId], references: [id])
+  productId     String   @db.Uuid
+  product       Product  @relation(fields: [productId], references: [id])
+  quantity      Int
+  unitCostMinor Int
+  
+  batchId       String?  @db.Uuid
+  batch         ProductBatch? @relation(fields: [batchId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  businessId String   @db.Uuid
+  business   Business @relation(fields: [businessId], references: [id])
+  userId     String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [id])
+  action     String
+  entityType String
+  entityId   String   @db.Uuid
+  oldValue   Json?
+  newValue   Json?
+  reason     String?
+  createdAt  DateTime @default(now())
+}
+
+// ----------------------------------------------------------------------
+// Pharmacy module entities
+// ----------------------------------------------------------------------
+
+model ProductBatch {
+  id               String   @id @default(uuid()) @db.Uuid
+  productId        String   @db.Uuid
+  product          Product  @relation(fields: [productId], references: [id])
+  batchNumber      String
+  expiryDate       DateTime @db.Date
+  manufacturer     String?
+  quantityReceived Int
+  costPriceMinor   Int
+  createdAt        DateTime @default(now())
+
+  saleItems        SaleItem[]
+  purchaseItems    PurchaseItem[]
+}
+
+model Prescription {
+  id               String   @id @default(uuid()) @db.Uuid
+  saleId           String?  @db.Uuid
+  sale             Sale?    @relation(fields: [saleId], references: [id])
+  patientName      String
+  doctorName       String?
+  fileUrl          String?
+  verifiedByUserId String   @db.Uuid
+  verifiedByUser   User     @relation(fields: [verifiedByUserId], references: [id])
+  createdAt        DateTime @default(now())
+}

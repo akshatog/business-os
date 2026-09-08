@@ -43,3 +43,24 @@ Entries are appended, never removed, in Context / Decision / Consequences format
 **Context:** Considering full test-driven development vs. no formal testing discipline.
 **Decision:** Test-required (tests written before/alongside implementation) for business logic — sale creation, stock math, permissions/auth. Contract-and-review, not test-first, for UI screens.
 **Consequences:** Business-logic bugs are caught early and give AI coding agents a concrete target to implement against; UI work stays fast and exploratory.
+
+---
+
+## 2026-09-06 — Money representation
+**Context:** Financial calculations (tax, discounts, totals) are prone to floating-point rounding errors if stored as decimals.
+**Decision:** All money fields are stored as integers in the smallest currency unit (paise), not decimal rupees.
+**Consequences:** Every money field needs explicit conversion to rupees for display; in exchange, arithmetic across tax/discount/totals can't silently drift due to floating-point rounding — directly relevant given this is a finance-handling application.
+
+---
+
+## 2026-09-06 — Payment mismatch policy (credit sales)
+**Context:** Two options considered when a sale's payment total is less than its total amount: (A) require full payment to mark a sale complete, or (B) allow the sale to complete with the shortfall recorded as customer credit (udhaar).
+**Decision:** Option B — credit sales are supported from Phase 2, not deferred as a later feature. A sale's payment status (`unpaid`/`partially_paid`/`paid`) is derived from its Payment rows rather than stored directly, and additional Payment rows can be recorded against a sale later as repayments.
+**Consequences:** Credit sales are core to how small Indian shops actually operate, so treating this as a later add-on would have meant retrofitting it into `createSale` and the schema after the fact. This adds real scope to Phase 2 (a `recordPayment` service usable for both split payments and later repayments) and to Phase 3 (a customer credit view), in exchange for not needing to redesign the Sale/Payment relationship later.
+
+---
+
+## 2026-09-06 — Repayment overpayment
+**Context:** Whether a repayment larger than the amount actually owed should be rejected, capped, or stored as forward credit.
+**Decision:** A repayment is capped at exactly what's due — the system never records or stores an amount beyond the outstanding balance. Any extra cash handed over is change given at the counter, exactly like a normal cash sale, and isn't tracked in the ledger at all.
+**Consequences:** Keeps the credit ledger simple (a customer's balance only ever decreases toward zero, never goes negative or holds forward credit); change-giving stays a counter-level concern, not a system concept.
