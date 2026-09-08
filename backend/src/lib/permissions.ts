@@ -1,9 +1,4 @@
-export enum Role {
-  owner = 'owner',
-  manager = 'manager',
-  cashier = 'cashier',
-  inventory_staff = 'inventory_staff'
-}
+import { Role } from '@prisma/client';
 
 export const PERMISSIONS = [
   'manage_users',

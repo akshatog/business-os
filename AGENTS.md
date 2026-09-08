@@ -18,4 +18,4 @@ A modular business management platform for offline Indian businesses, with POS a
 12. No duplicate functions or dead code — review and clean your own output before considering a task done.
 13. Enumerate and test edge cases explicitly for anything touching money or stock — see `docs/EDGE_CASES.md`.
 
-Full architecture and rationale live in `/docs`. Read `ARCHITECTURE.md` and `RULES.md` before implementing anything non-trivial.
+Full architecture and rationale live in `/docs`. Read `ARCHITECTURE.md`, `ROADMAP.md`, and `RULES.md` before implementing anything non-trivial.

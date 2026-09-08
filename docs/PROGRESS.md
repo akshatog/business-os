@@ -12,3 +12,4 @@ Dated, short entries. Update every session.
 
 ## 2026-09-08
 - Implemented Phase 1.1: Modeled all core and pharmacy entities in `schema.prisma` per `DATA_MODEL.md`.
+- Implemented Phase 1.2: Created `lib/permissions.ts` mapping roles to permissions and added the `hasPermission` helper function.
