@@ -160,6 +160,7 @@ This is the actual sequence of how the frontend arrived at its current state:
 2. **Repository Integration:** This frontend foundation work was then integrated into the actual Business OS repository structure (inside the `frontend/` folder) as part of a monorepo setup alongside the backend.
 3. **Application Shell Integration:** The application shell (`AppLayout.tsx`, `Sidebar.tsx`, `Header.tsx`) and the design system were connected and basic routing was added (`/app`) to prove the layout works.
 4. **Dashboard Contract:** The architectural rules and data expectations for the Dashboard were documented in a screen contract before building the actual screen.
+5. **Permissions Build Fix:** The frontend representation of the backend role contract (`permissions.ts`) was updated to a TypeScript type union. This was necessary to fix a build error caused by the `erasableSyntaxOnly` compiler rule which rejects runtime `enum` declarations. The backend permission definitions were not modified, ensuring the contract remains intact.
 
 ## Current Frontend Status
 

@@ -1,9 +1,4 @@
-export enum Role {
-  owner = "owner",
-  manager = "manager",
-  cashier = "cashier",
-  inventory_staff = "inventory_staff",
-}
+export type Role = "owner" | "manager" | "cashier" | "inventory_staff";
 
 export const PERMISSIONS = [
   "manage_users",
@@ -22,7 +17,7 @@ export const PERMISSIONS = [
 export type Permission = (typeof PERMISSIONS)[number];
 
 export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
-  [Role.owner]: [
+  owner: [
     "manage_users",
     "manage_products",
     "manage_categories",
@@ -35,7 +30,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "view_reports",
     "manage_purchases",
   ],
-  [Role.manager]: [
+  manager: [
     "manage_products",
     "manage_categories",
     "manage_customers",
@@ -47,8 +42,8 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "view_reports",
     "manage_purchases",
   ],
-  [Role.cashier]: ["create_sale", "manage_customers"],
-  [Role.inventory_staff]: [
+  cashier: ["create_sale", "manage_customers"],
+  inventory_staff: [
     "manage_products",
     "manage_categories",
     "adjust_stock",
