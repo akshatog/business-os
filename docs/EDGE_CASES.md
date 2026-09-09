@@ -47,6 +47,8 @@ This app handles real money and stock. This list drives TDD for anything in `bac
 - An expired or invalid JWT mid-transaction (e.g. token expires while a sale is being finalized)
 - A cashier attempting a manager-only action by calling the API directly, bypassing the UI
 - A deactivated user's existing session — should be rejected on the next request, not just blocked from future logins
+- A non-owner attempting to access or submit the onboarding/business-update endpoint (rejected)
+- A user from Business A attempting to read or modify Business B's data via a guessed/forged ID (rejected — every query must scope by the authenticated user's businessId)
 
 ## Money handling
-- Any calculation that could produce a fractional paise value — define and test the rounding rule explicitly, don't leave it to whatever the language does by default.
+- Any calculation that could produce a fractional paise value — define and test the rounding rule explicitly, don't leave it to whatever the language does by default

@@ -64,3 +64,16 @@ Entries are appended, never removed, in Context / Decision / Consequences format
 **Context:** Whether a repayment larger than the amount actually owed should be rejected, capped, or stored as forward credit.
 **Decision:** A repayment is capped at exactly what's due — the system never records or stores an amount beyond the outstanding balance. Any extra cash handed over is change given at the counter, exactly like a normal cash sale, and isn't tracked in the ledger at all.
 **Consequences:** Keeps the credit ledger simple (a customer's balance only ever decreases toward zero, never goes negative or holds forward credit); change-giving stays a counter-level concern, not a system concept.
+
+---
+
+## 2026-09-06 — Signup vs. onboarding, and how the first owner is created
+**Context:** `register-business` was initially scoped as one step creating a fully-detailed Business + Owner. It became clear a business's real details (type, address, GST, phone) and the module-activating businessType selection need their own step, not to be crammed into signup — and staff users need a different, permission-gated creation path from the owner's own signup.
+**Decision:** Split into three distinct things — `POST /api/auth/register-business` (public, minimal: business name + owner credentials, creates Business with `onboardingCompleted: false`), a separate Onboarding flow (`PATCH /api/business/me`, owner-only) that captures full business details and businessType, and `POST /api/users` (permission-gated, creates staff under an existing business). The app gates all core screens behind `business.onboardingCompleted`.
+**Consequences:** Signup stays frictionless (fewer fields = fewer people abandoning it), and there's no separate bootstrap script needed for the first owner — they onboard through the same flow any new pilot store would. This does mean `businessType` is nullable until onboarding completes, and any code reading it must handle that null state during the gap between signup and onboarding.
+---
+
+## 2026-09-09 � isActive check: DB lookup vs token revocation list
+**Context:** When a user is deactivated, their existing JWT is still cryptographically valid. We need to decide whether to reject it on the next request via a DB lookup, a Redis revocation cache, or a short token expiry.
+**Decision:** DB lookup on every authenticated request (prisma.user.findUnique inside uthenticateToken). No Redis, no revocation list for the MVP.
+**Consequences:** Every API call hits the DB once for the user lookup (acceptable at this scale). Deactivated users are rejected on their very next request, not just blocked from re-logging in. Revisit in Phase 6 (offline sync) if the DB check becomes a bottleneck.

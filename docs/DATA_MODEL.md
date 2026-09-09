@@ -14,12 +14,13 @@ All money fields are **integers in the smallest currency unit** (paise, not rupe
 | Field | Type | Notes |
 |---|---|---|
 | id | uuid | |
-| name | string | |
-| businessType | enum | `pharmacy`, `clothing`, `grocery`, ... — determines active module |
-| address | string | |
-| gstNumber | string, nullable | |
-| phone | string | |
+| name | string | set at signup — minimal, just the business's name |
+| businessType | enum, nullable | `pharmacy`, `clothing`, `grocery`, ... — determines active module. Null until onboarding is completed |
+| address | string, nullable | captured during onboarding, not signup |
+| gstNumber | string, nullable | captured during onboarding |
+| phone | string, nullable | captured during onboarding |
 | email | string, nullable | |
+| onboardingCompleted | boolean | false at signup; true once the owner finishes the onboarding flow. The app gates access to Dashboard/Checkout/etc. on this — an incomplete business is routed to Onboarding instead |
 | createdAt | datetime | |
 
 ### User

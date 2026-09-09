@@ -17,5 +17,6 @@ A modular business management platform for offline Indian businesses, with POS a
 11. Update `docs/DECISIONS.md` every time a real decision is made, including why the chosen option beat the alternatives.
 12. No duplicate functions or dead code — review and clean your own output before considering a task done.
 13. Enumerate and test edge cases explicitly for anything touching money or stock — see `docs/EDGE_CASES.md`.
+14. Update `docs/EXPLAINED.md` after completing any phase or significant task with a plain-English, jargon-free explanation of what was built, why it exists, and how it works.
 
 Full architecture and rationale live in `/docs`. Read `ARCHITECTURE.md`, `ROADMAP.md`, and `RULES.md` before implementing anything non-trivial.

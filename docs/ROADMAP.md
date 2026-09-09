@@ -19,7 +19,9 @@ Phase-wise plan. No fixed dates/timelines are set here yet — this tracks order
 
 1.2 **`lib/permissions.ts`** — Role → Permission[] map and `hasPermission(role, permission)` helper. Everything downstream depends on this existing first.
 
-1.3 **Auth service, routes, middleware** — register, login, JWT verification middleware, permission-checking middleware. TDD first, against: password hashed not stored plaintext; wrong password rejected; expired/invalid JWT rejected; a deactivated user's existing token rejected on next request; a role without the required permission gets 403.
+1.3 **Auth service, routes, middleware** — two distinct registration paths, not one: `POST /api/auth/register-business` (public — creates a Business + its Owner user together, minimal fields only: business name, owner name/email/password) and `POST /api/users` (requires `manage_users` permission — creates staff users under an existing business; lives in a users service, not auth). Plus login, JWT verification middleware, permission-checking middleware, and rate limiting on login. TDD first, against: password hashed not stored plaintext; wrong password rejected; expired/invalid JWT rejected; a deactivated user's existing token rejected on next request (checked via DB lookup on `isActive` per request — no token revocation list/cache for this MVP); a role without the required permission gets 403.
+
+1.3a **Write `docs/screens/onboarding.md`** *(done)* and implement the business-onboarding flow — `PATCH /api/business/me`, owner-only, sets businessType, address, gstNumber, phone, and marks `onboardingCompleted: true`. TDD: non-owner roles rejected; already-onboarded business can still be edited later (this endpoint isn't single-use, just gates initial access) but the app only *routes* to onboarding based on the flag. On the frontend, gate all core screens behind `business.onboardingCompleted` — false routes to Onboarding regardless of what the user was trying to reach.
 
 1.4 **AuditLog service** — a single `writeAuditLog(userId, action, entityType, entityId, oldValue, newValue, reason)` function every other service calls. Build before anything that needs it.
 
@@ -31,7 +33,7 @@ Phase-wise plan. No fixed dates/timelines are set here yet — this tracks order
 
 1.8 **Supplier CRUD** — permission-gated, basic tests.
 
-**Done when:** schema is migrated; a user can register/login and hit a protected route correctly per their role; `recordStockMovement`/`getCurrentStock` pass every edge case above; Product/Customer/Supplier CRUD exists behind permission checks.
+**Done when:** schema is migrated; a business can sign up minimally, complete onboarding (setting its type and details), and only then reach the core app; a user can register/login and hit a protected route correctly per their role; `recordStockMovement`/`getCurrentStock` pass every edge case above; Product/Customer/Supplier CRUD exists behind permission checks.
 
 ---
 
