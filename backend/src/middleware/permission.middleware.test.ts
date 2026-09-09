@@ -4,9 +4,7 @@ import { requirePermission } from "./permission.middleware.js";
 import { type Permission } from "../lib/permissions.js";
 import { Role } from "@prisma/client";
 
-function makeReq(
-  role?: Role,
-): Partial<Request> & {
+function makeReq(role?: Role): Partial<Request> & {
   user?: { id: string; role: Role; businessId: string; isActive: boolean };
 } {
   if (!role) return {};
