@@ -162,6 +162,7 @@ This is the actual sequence of how the frontend arrived at its current state:
 4. **Dashboard Contract:** The architectural rules and data expectations for the Dashboard were documented in a screen contract before building the actual screen.
 5. **Permissions Build Fix:** The frontend representation of the backend role contract (`permissions.ts`) was updated to a TypeScript type union. This was necessary to fix a build error caused by the `erasableSyntaxOnly` compiler rule which rejects runtime `enum` declarations. The backend permission definitions were not modified, ensuring the contract remains intact.
 6. **Core Dashboard Page Foundation (Step 1):** A structural page component was created for the Core Dashboard (`Dashboard.tsx`). The application shell's `/app` route was updated to mount this page instead of the original placeholder. The page contains only the layout heading and an empty container prepared for future dashboard widgets. No data, mocks, or API fetching were implemented at this stage. Both `npm run lint` and `npm run build` completed successfully.
+7. **Generic Widget Registry Foundation (Step 2):** A clean `DashboardWidget` type and a composition mechanism (`composeDashboardWidgets`) were created in `frontend/src/core/dashboard/registry.ts`. This allows core and module-specific widgets to be cleanly combined and sorted by priority without the core dashboard knowing which vertical module is active. The `Dashboard.tsx` page was updated to consume this registry abstraction. No actual business widgets, module-specific code, or backend changes were introduced.
 
 ## Current Frontend Status
 
@@ -171,11 +172,11 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Application shell structure
 - [x] Basic routing to shell
 - [x] Dashboard screen contract
-- [/] Dashboard final UI (Structural foundation complete)
+- [/] Dashboard final UI (Registry abstraction complete)
 - [ ] Data models, types, and schemas implementation
 - [ ] Service and mock data implementation
 
-**Current frontend stage:** Core Dashboard page structure implemented; awaiting widget and metric implementations.
+**Current frontend stage:** Core Dashboard widget registry established; awaiting actual widget implementations.
 
 ## Important Git Checkpoints
 
