@@ -1,8 +1,8 @@
 import { composeDashboardWidgets, type DashboardWidget } from "@/core/dashboard/registry";
+import { CORE_WIDGETS } from "@/core/dashboard/core-widgets";
 
 // Conceptually, module widgets will be injected here later based on the active business type.
-// For now, the registry is intentionally empty as we build out the foundation.
-const CORE_WIDGETS: DashboardWidget[] = [];
+// For now, the registry contains only the core widgets.
 const MODULE_WIDGETS: DashboardWidget[] = [];
 
 export function Dashboard() {

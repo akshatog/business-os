@@ -163,6 +163,8 @@ This is the actual sequence of how the frontend arrived at its current state:
 5. **Permissions Build Fix:** The frontend representation of the backend role contract (`permissions.ts`) was updated to a TypeScript type union. This was necessary to fix a build error caused by the `erasableSyntaxOnly` compiler rule which rejects runtime `enum` declarations. The backend permission definitions were not modified, ensuring the contract remains intact.
 6. **Core Dashboard Page Foundation (Step 1):** A structural page component was created for the Core Dashboard (`Dashboard.tsx`). The application shell's `/app` route was updated to mount this page instead of the original placeholder. The page contains only the layout heading and an empty container prepared for future dashboard widgets. No data, mocks, or API fetching were implemented at this stage. Both `npm run lint` and `npm run build` completed successfully.
 7. **Generic Widget Registry Foundation (Step 2):** A clean `DashboardWidget` type and a composition mechanism (`composeDashboardWidgets`) were created in `frontend/src/core/dashboard/registry.ts`. This allows core and module-specific widgets to be cleanly combined and sorted by priority without the core dashboard knowing which vertical module is active. The `Dashboard.tsx` page was updated to consume this registry abstraction. No actual business widgets, module-specific code, or backend changes were introduced.
+8. **Sales Today KPI Widget (Step 3):** The first core business widget ("Sales Today") was added. The component lives in `frontend/src/core/components/dashboard/SalesTodayWidget.tsx` and fetches data from a new mock service (`frontend/src/services/dashboard.ts`). A dedicated money-formatting utility was added (`frontend/src/lib/money.ts`) to enforce the project's standard of formatting backend integer paise into Indian Rupee strings. The widget is fully registered through the dashboard registry rather than being hardcoded into the layout. No backend code was modified.
+9. **Sales Today Data States (Step 4):** The Sales Today widget was upgraded to support explicit, production-quality data states. It now includes a dimension-stable loading skeleton, an accessible error state with a retry action, and a distinct "no-data" state (distinguishing between ₹0 in sales vs missing data). The existing widget registry integration and mock-to-service-to-UI data separation principles were preserved.
 
 ## Current Frontend Status
 
@@ -172,11 +174,11 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Application shell structure
 - [x] Basic routing to shell
 - [x] Dashboard screen contract
-- [/] Dashboard final UI (Registry abstraction complete)
+- [/] Dashboard final UI (Sales Today KPI with full data states)
 - [ ] Data models, types, and schemas implementation
-- [ ] Service and mock data implementation
+- [/] Service and mock data implementation (Dashboard foundation created)
 
-**Current frontend stage:** Core Dashboard widget registry established; awaiting actual widget implementations.
+**Current frontend stage:** Core Dashboard rendering the fully stateful Sales Today widget via the registry.
 
 ## Important Git Checkpoints
 
