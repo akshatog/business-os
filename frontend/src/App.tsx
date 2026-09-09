@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AppLayout } from '@/core/components/layout/AppLayout'
+import { Dashboard } from '@/core/pages/Dashboard'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
@@ -127,14 +128,7 @@ function App() {
       <Routes>
         <Route path="/" element={<ViteHome />} />
         <Route path="/app" element={<AppLayout />}>
-          <Route index element={
-            <div className="bg-white rounded-lg shadow-sm border p-8 flex items-center justify-center min-h-[400px]">
-              <div className="text-center">
-                <h2 className="text-2xl font-semibold mb-2 text-foreground">Application Shell Ready</h2>
-                <p className="text-muted-foreground">The Foundation and Design System have been successfully integrated.</p>
-              </div>
-            </div>
-          } />
+          <Route index element={<Dashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

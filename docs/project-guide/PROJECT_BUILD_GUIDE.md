@@ -161,6 +161,7 @@ This is the actual sequence of how the frontend arrived at its current state:
 3. **Application Shell Integration:** The application shell (`AppLayout.tsx`, `Sidebar.tsx`, `Header.tsx`) and the design system were connected and basic routing was added (`/app`) to prove the layout works.
 4. **Dashboard Contract:** The architectural rules and data expectations for the Dashboard were documented in a screen contract before building the actual screen.
 5. **Permissions Build Fix:** The frontend representation of the backend role contract (`permissions.ts`) was updated to a TypeScript type union. This was necessary to fix a build error caused by the `erasableSyntaxOnly` compiler rule which rejects runtime `enum` declarations. The backend permission definitions were not modified, ensuring the contract remains intact.
+6. **Core Dashboard Page Foundation (Step 1):** A structural page component was created for the Core Dashboard (`Dashboard.tsx`). The application shell's `/app` route was updated to mount this page instead of the original placeholder. The page contains only the layout heading and an empty container prepared for future dashboard widgets. No data, mocks, or API fetching were implemented at this stage. Both `npm run lint` and `npm run build` completed successfully.
 
 ## Current Frontend Status
 
@@ -170,11 +171,11 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Application shell structure
 - [x] Basic routing to shell
 - [x] Dashboard screen contract
-- [ ] Dashboard final UI
+- [/] Dashboard final UI (Structural foundation complete)
 - [ ] Data models, types, and schemas implementation
 - [ ] Service and mock data implementation
 
-**Current frontend stage:** Foundation and Application Shell completed; ready for first actual business screen implementation.
+**Current frontend stage:** Core Dashboard page structure implemented; awaiting widget and metric implementations.
 
 ## Important Git Checkpoints
 
