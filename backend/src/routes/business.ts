@@ -12,7 +12,7 @@ router.patch(
   "/me",
   authenticateToken,
   requirePermission("manage_users"),
-  updateOnboardingHandler
+  updateOnboardingHandler,
 );
 
 export default router;

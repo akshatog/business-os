@@ -22,7 +22,9 @@ export interface RegisterBusinessInput {
   password: string;
 }
 
-export async function registerBusiness(input: RegisterBusinessInput): Promise<{ token: string }> {
+export async function registerBusiness(
+  input: RegisterBusinessInput,
+): Promise<{ token: string }> {
   const passwordHash = await bcrypt.hash(input.password, BCRYPT_ROUNDS);
 
   const { business, user } = await prisma.$transaction(async (tx) => {
@@ -50,7 +52,7 @@ export async function registerBusiness(input: RegisterBusinessInput): Promise<{ 
   const token = jwt.sign(
     { userId: user.id, role: user.role, businessId: business.id },
     getJwtSecret(),
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
 
   return { token };
@@ -81,7 +83,7 @@ export async function login(input: LoginInput): Promise<{ token: string }> {
   const token = jwt.sign(
     { userId: user.id, role: user.role, businessId: user.businessId },
     getJwtSecret(),
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
 
   return { token };

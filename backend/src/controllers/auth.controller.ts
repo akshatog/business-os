@@ -15,7 +15,10 @@ const LoginSchema = z.object({
   businessId: z.string().uuid(),
 });
 
-export async function registerBusinessHandler(req: Request, res: Response): Promise<void> {
+export async function registerBusinessHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
   const parsed = RegisterSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });

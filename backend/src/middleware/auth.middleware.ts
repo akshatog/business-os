@@ -18,10 +18,12 @@ function getJwtSecret(): string {
 export async function authenticateToken(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> {
   const authHeader = req.headers["authorization"];
-  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : undefined;
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : undefined;
 
   if (!token) {
     res.status(401).json({ error: "No token provided" });

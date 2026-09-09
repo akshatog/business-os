@@ -10,7 +10,7 @@ export interface OnboardingInput {
 
 export async function updateOnboarding(
   businessId: string,
-  input: OnboardingInput
+  input: OnboardingInput,
 ): Promise<void> {
   // Validate businessType is a known enum value
   const validTypes = Object.values(BusinessType) as string[];

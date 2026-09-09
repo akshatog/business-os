@@ -32,7 +32,10 @@ describe("authenticateToken middleware", () => {
 
   it("returns 401 when no token is provided", async () => {
     const req = makeReq() as Request;
-    const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as unknown as Response;
+    const res = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    } as unknown as Response;
     const next = vi.fn() as NextFunction;
 
     await authenticateToken(req, res, next);
@@ -43,7 +46,10 @@ describe("authenticateToken middleware", () => {
 
   it("returns 401 for an invalid/tampered JWT", async () => {
     const req = makeReq("this.is.notvalid") as Request;
-    const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as unknown as Response;
+    const res = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    } as unknown as Response;
     const next = vi.fn() as NextFunction;
 
     await authenticateToken(req, res, next);
@@ -53,9 +59,14 @@ describe("authenticateToken middleware", () => {
   });
 
   it("returns 401 for an expired JWT", async () => {
-    const expiredToken = jwt.sign({ userId: "u1", role: "cashier" }, SECRET, { expiresIn: -1 });
+    const expiredToken = jwt.sign({ userId: "u1", role: "cashier" }, SECRET, {
+      expiresIn: -1,
+    });
     const req = makeReq(expiredToken) as Request;
-    const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as unknown as Response;
+    const res = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    } as unknown as Response;
     const next = vi.fn() as NextFunction;
 
     await authenticateToken(req, res, next);
@@ -65,11 +76,23 @@ describe("authenticateToken middleware", () => {
   });
 
   it("returns 403 for a valid JWT but deactivated user (DB check)", async () => {
-    const token = makeToken({ userId: "u1", role: "cashier", businessId: "b1" });
-    mockPrisma.user.findUnique.mockResolvedValue({ id: "u1", isActive: false, role: "cashier", businessId: "b1" });
+    const token = makeToken({
+      userId: "u1",
+      role: "cashier",
+      businessId: "b1",
+    });
+    mockPrisma.user.findUnique.mockResolvedValue({
+      id: "u1",
+      isActive: false,
+      role: "cashier",
+      businessId: "b1",
+    });
 
     const req = makeReq(token) as Request;
-    const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as unknown as Response;
+    const res = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    } as unknown as Response;
     const next = vi.fn() as NextFunction;
 
     await authenticateToken(req, res, next);
@@ -79,11 +102,23 @@ describe("authenticateToken middleware", () => {
   });
 
   it("calls next() and attaches user for a valid, active token", async () => {
-    const token = makeToken({ userId: "u1", role: "manager", businessId: "b1" });
-    mockPrisma.user.findUnique.mockResolvedValue({ id: "u1", isActive: true, role: "manager", businessId: "b1" });
+    const token = makeToken({
+      userId: "u1",
+      role: "manager",
+      businessId: "b1",
+    });
+    mockPrisma.user.findUnique.mockResolvedValue({
+      id: "u1",
+      isActive: true,
+      role: "manager",
+      businessId: "b1",
+    });
 
     const req = makeReq(token) as Request & { user?: unknown };
-    const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as unknown as Response;
+    const res = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    } as unknown as Response;
     const next = vi.fn() as NextFunction;
 
     await authenticateToken(req, res, next);

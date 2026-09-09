@@ -26,24 +26,32 @@ describe("business.service — updateOnboarding", () => {
     });
 
     // Reading a business with null businessType should not throw
-    const result = await mockPrisma.business.findUnique({ where: { id: "b1" } });
+    const result = await mockPrisma.business.findUnique({
+      where: { id: "b1" },
+    });
     expect(result.businessType).toBeNull();
     expect(result.onboardingCompleted).toBe(false);
   });
 
   it("marks onboardingCompleted: true and sets businessType after onboarding", async () => {
     let captured: Record<string, unknown> | undefined;
-    mockPrisma.$transaction.mockImplementation(async (fn: (tx: typeof prisma) => Promise<unknown>) => {
-      const fakeTx = {
-        business: {
-          update: vi.fn().mockImplementation(({ data }: { data: Record<string, unknown> }) => {
-            captured = data;
-            return Promise.resolve({ id: "b1", ...data });
-          }),
-        },
-      };
-      return fn(fakeTx as unknown as typeof prisma);
-    });
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const fakeTx = {
+          business: {
+            update: vi
+              .fn()
+              .mockImplementation(
+                ({ data }: { data: Record<string, unknown> }) => {
+                  captured = data;
+                  return Promise.resolve({ id: "b1", ...data });
+                },
+              ),
+          },
+        };
+        return fn(fakeTx as unknown as typeof prisma);
+      },
+    );
 
     await updateOnboarding("b1", {
       businessType: "pharmacy",

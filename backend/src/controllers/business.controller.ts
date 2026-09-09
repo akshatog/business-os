@@ -9,7 +9,10 @@ const OnboardingSchema = z.object({
   phone: z.string().optional(),
 });
 
-export async function updateOnboardingHandler(req: Request, res: Response): Promise<void> {
+export async function updateOnboardingHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
   // requirePermission and authenticateToken run before this handler
   // req.user is guaranteed to exist and be an owner at this point
   const businessId = req.user!.businessId;
@@ -24,7 +27,8 @@ export async function updateOnboardingHandler(req: Request, res: Response): Prom
     await updateOnboarding(businessId, parsed.data);
     res.status(200).json({ message: "Onboarding complete" });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Onboarding update failed";
+    const message =
+      err instanceof Error ? err.message : "Onboarding update failed";
     res.status(400).json({ error: message });
   }
 }

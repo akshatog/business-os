@@ -31,20 +31,28 @@ describe("auth.service — registerBusiness", () => {
   it("hashes the password — plaintext is never stored", async () => {
     let capturedHash: string | undefined;
 
-    mockPrisma.$transaction.mockImplementation(async (fn: (tx: typeof prisma) => Promise<unknown>) => {
-      const fakeTx = {
-        business: {
-          create: vi.fn().mockResolvedValue({ id: "biz-1", name: "Test Pharma" }),
-        },
-        user: {
-          create: vi.fn().mockImplementation(({ data }: { data: { passwordHash: string } }) => {
-            capturedHash = data.passwordHash;
-            return Promise.resolve({ id: "user-1", role: "owner" });
-          }),
-        },
-      };
-      return fn(fakeTx as unknown as typeof prisma);
-    });
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const fakeTx = {
+          business: {
+            create: vi
+              .fn()
+              .mockResolvedValue({ id: "biz-1", name: "Test Pharma" }),
+          },
+          user: {
+            create: vi
+              .fn()
+              .mockImplementation(
+                ({ data }: { data: { passwordHash: string } }) => {
+                  capturedHash = data.passwordHash;
+                  return Promise.resolve({ id: "user-1", role: "owner" });
+                },
+              ),
+          },
+        };
+        return fn(fakeTx as unknown as typeof prisma);
+      },
+    );
 
     await registerBusiness({
       businessName: "Test Pharma",
@@ -61,20 +69,26 @@ describe("auth.service — registerBusiness", () => {
   it("creates business with onboardingCompleted: false", async () => {
     let capturedBusinessData: Record<string, unknown> | undefined;
 
-    mockPrisma.$transaction.mockImplementation(async (fn: (tx: typeof prisma) => Promise<unknown>) => {
-      const fakeTx = {
-        business: {
-          create: vi.fn().mockImplementation(({ data }: { data: Record<string, unknown> }) => {
-            capturedBusinessData = data;
-            return Promise.resolve({ id: "biz-1", name: data.name });
-          }),
-        },
-        user: {
-          create: vi.fn().mockResolvedValue({ id: "user-1", role: "owner" }),
-        },
-      };
-      return fn(fakeTx as unknown as typeof prisma);
-    });
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const fakeTx = {
+          business: {
+            create: vi
+              .fn()
+              .mockImplementation(
+                ({ data }: { data: Record<string, unknown> }) => {
+                  capturedBusinessData = data;
+                  return Promise.resolve({ id: "biz-1", name: data.name });
+                },
+              ),
+          },
+          user: {
+            create: vi.fn().mockResolvedValue({ id: "user-1", role: "owner" }),
+          },
+        };
+        return fn(fakeTx as unknown as typeof prisma);
+      },
+    );
 
     await registerBusiness({
       businessName: "New Shop",
@@ -88,13 +102,17 @@ describe("auth.service — registerBusiness", () => {
   });
 
   it("returns a JWT string on success", async () => {
-    mockPrisma.$transaction.mockImplementation(async (fn: (tx: typeof prisma) => Promise<unknown>) => {
-      const fakeTx = {
-        business: { create: vi.fn().mockResolvedValue({ id: "biz-1" }) },
-        user: { create: vi.fn().mockResolvedValue({ id: "user-1", role: "owner" }) },
-      };
-      return fn(fakeTx as unknown as typeof prisma);
-    });
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const fakeTx = {
+          business: { create: vi.fn().mockResolvedValue({ id: "biz-1" }) },
+          user: {
+            create: vi.fn().mockResolvedValue({ id: "user-1", role: "owner" }),
+          },
+        };
+        return fn(fakeTx as unknown as typeof prisma);
+      },
+    );
 
     const result = await registerBusiness({
       businessName: "Biz",
@@ -115,7 +133,11 @@ describe("auth.service — login", () => {
     mockPrisma.user.findFirst.mockResolvedValue(null);
 
     await expect(
-      login({ email: "nobody@test.com", password: "pass", businessId: "biz-1" })
+      login({
+        email: "nobody@test.com",
+        password: "pass",
+        businessId: "biz-1",
+      }),
     ).rejects.toThrow("Invalid credentials");
   });
 
@@ -129,7 +151,11 @@ describe("auth.service — login", () => {
     });
 
     await expect(
-      login({ email: "user@test.com", password: "wrongpass", businessId: "biz-1" })
+      login({
+        email: "user@test.com",
+        password: "wrongpass",
+        businessId: "biz-1",
+      }),
     ).rejects.toThrow("Invalid credentials");
   });
 
@@ -143,7 +169,11 @@ describe("auth.service — login", () => {
     });
 
     await expect(
-      login({ email: "inactive@test.com", password: "pass123", businessId: "biz-1" })
+      login({
+        email: "inactive@test.com",
+        password: "pass123",
+        businessId: "biz-1",
+      }),
     ).rejects.toThrow("Account is deactivated");
   });
 
@@ -157,7 +187,11 @@ describe("auth.service — login", () => {
       businessId: "biz-1",
     });
 
-    const result = await login({ email: "ok@test.com", password: "pass123", businessId: "biz-1" });
+    const result = await login({
+      email: "ok@test.com",
+      password: "pass123",
+      businessId: "biz-1",
+    });
 
     expect(typeof result.token).toBe("string");
     expect(result.token.split(".").length).toBe(3);
