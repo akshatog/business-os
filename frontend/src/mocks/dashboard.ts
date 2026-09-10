@@ -14,3 +14,20 @@ export async function fetchMockSalesToday(): Promise<MockSalesTodayResponse> {
     }, 400);
   });
 }
+
+export interface MockTotalCustomersResponse {
+  totalCustomers: number | null;
+}
+
+export const MOCK_TOTAL_CUSTOMERS: MockTotalCustomersResponse = {
+  totalCustomers: 1248,
+};
+
+export async function fetchMockTotalCustomers(): Promise<MockTotalCustomersResponse> {
+  // Simulate network delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_TOTAL_CUSTOMERS);
+    }, 400);
+  });
+}

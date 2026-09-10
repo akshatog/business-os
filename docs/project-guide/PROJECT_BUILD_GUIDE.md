@@ -165,6 +165,7 @@ This is the actual sequence of how the frontend arrived at its current state:
 7. **Generic Widget Registry Foundation (Step 2):** A clean `DashboardWidget` type and a composition mechanism (`composeDashboardWidgets`) were created in `frontend/src/core/dashboard/registry.ts`. This allows core and module-specific widgets to be cleanly combined and sorted by priority without the core dashboard knowing which vertical module is active. The `Dashboard.tsx` page was updated to consume this registry abstraction. No actual business widgets, module-specific code, or backend changes were introduced.
 8. **Sales Today KPI Widget (Step 3):** The first core business widget ("Sales Today") was added. The component lives in `frontend/src/core/components/dashboard/SalesTodayWidget.tsx` and fetches data from a new mock service (`frontend/src/services/dashboard.ts`). A dedicated money-formatting utility was added (`frontend/src/lib/money.ts`) to enforce the project's standard of formatting backend integer paise into Indian Rupee strings. The widget is fully registered through the dashboard registry rather than being hardcoded into the layout. No backend code was modified.
 9. **Sales Today Data States (Step 4):** The Sales Today widget was upgraded to support explicit, production-quality data states. It now includes a dimension-stable loading skeleton, an accessible error state with a retry action, and a distinct "no-data" state (distinguishing between ₹0 in sales vs missing data). The existing widget registry integration and mock-to-service-to-UI data separation principles were preserved.
+10. **Total Customers KPI Widget (Step 5):** The second core business widget ("Total Customers") was added. The component lives in `frontend/src/core/components/dashboard/TotalCustomersWidget.tsx` and fetches data from an extended mock service (`frontend/src/services/dashboard.ts` and `frontend/src/mocks/dashboard.ts`). It follows the same stateful patterns established by Sales Today (loading, error, no-data, and valid zero count states). The widget is registered through the dashboard registry. The dashboard layout naturally handles the second card responsively. No shared generic KPI abstraction was introduced because the two widgets are simple enough that abstracting them now would be premature. No backend files changed.
 
 ## Current Frontend Status
 
@@ -174,11 +175,11 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Application shell structure
 - [x] Basic routing to shell
 - [x] Dashboard screen contract
-- [/] Dashboard final UI (Sales Today KPI with full data states)
+- [/] Dashboard final UI (Sales Today & Total Customers KPIs with full data states)
 - [ ] Data models, types, and schemas implementation
 - [/] Service and mock data implementation (Dashboard foundation created)
 
-**Current frontend stage:** Core Dashboard rendering the fully stateful Sales Today widget via the registry.
+**Current frontend stage:** Core Dashboard rendering the fully stateful Sales Today and Total Customers widgets via the registry.
 
 ## Important Git Checkpoints
 
