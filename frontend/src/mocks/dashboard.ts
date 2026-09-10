@@ -99,3 +99,20 @@ export async function fetchMockTodaysTransactions(): Promise<MockTodaysTransacti
     }, 400);
   });
 }
+
+export interface MockOutstandingPaymentsResponse {
+  outstandingPaise: number | null;
+}
+
+export const MOCK_OUTSTANDING_PAYMENTS: MockOutstandingPaymentsResponse = {
+  outstandingPaise: 4250000, // ₹42,500.00
+};
+
+export async function fetchMockOutstandingPayments(): Promise<MockOutstandingPaymentsResponse> {
+  // Simulate network delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_OUTSTANDING_PAYMENTS);
+    }, 400);
+  });
+}

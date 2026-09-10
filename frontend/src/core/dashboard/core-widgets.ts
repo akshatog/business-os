@@ -5,6 +5,7 @@ import { TotalProductsWidget } from "@/core/components/dashboard/TotalProductsWi
 import { LowStockWidget } from "@/core/components/dashboard/LowStockWidget";
 import { TotalSuppliersWidget } from "@/core/components/dashboard/TotalSuppliersWidget";
 import { TodaysTransactionsWidget } from "@/core/components/dashboard/TodaysTransactionsWidget";
+import { OutstandingPaymentsWidget } from "@/core/components/dashboard/OutstandingPaymentsWidget";
 
 export const CORE_WIDGETS: DashboardWidget[] = [
   {
@@ -48,5 +49,12 @@ export const CORE_WIDGETS: DashboardWidget[] = [
     component: TodaysTransactionsWidget,
     requiredPermission: "create_sale",
     priority: 60,
+  },
+  {
+    id: "core-outstanding-payments",
+    title: "Outstanding Payments",
+    component: OutstandingPaymentsWidget,
+    requiredPermission: "view_financials",
+    priority: 70,
   },
 ];

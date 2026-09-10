@@ -170,6 +170,8 @@ This is the actual sequence of how the frontend arrived at its current state:
 12. **Low Stock KPI Widget (Step 7):** The fourth core business widget ("Low Stock") was added. The component lives in `frontend/src/core/components/dashboard/LowStockWidget.tsx` and fetches data from the mock service. It displays a count with a subtle supporting label. It is registered through the dashboard registry using the existing `adjust_stock` permission, which conceptually fits viewing low-stock information. The responsive grid gracefully wraps the four widgets as standard layout items. No premature abstraction was introduced. No backend files changed.
 13. **Total Suppliers KPI Widget (Step 8):** The fifth core business widget ("Total Suppliers") was added. The component lives in `frontend/src/core/components/dashboard/TotalSuppliersWidget.tsx` and fetches data from the mock service. It displays the count of active suppliers. It is registered through the dashboard registry using the `manage_suppliers` permission with a priority of 50. The responsive grid flawlessly incorporates this fifth KPI widget. No backend files changed.
 14. **Today's Transactions KPI Widget (Step 9):** The sixth core business widget ("Today's Transactions") was added. The component lives in `frontend/src/core/components/dashboard/TodaysTransactionsWidget.tsx` and fetches data from the mock service. It displays the count of transactions today. It is registered through the dashboard registry using the `create_sale` permission with a priority of 60. This permission correctly maps to any role authorized to operate the POS. The responsive grid successfully accommodates the sixth KPI widget. No backend files changed.
+15. **Outstanding Payments KPI Widget (Step 10):** The seventh core business widget ("Outstanding Payments") was added. The component lives in `frontend/src/core/components/dashboard/OutstandingPaymentsWidget.tsx` and fetches data from the mock service. The financial figure is natively handled in integer paise and formatted visually to Indian Rupees. It is registered through the dashboard registry using the existing `view_financials` permission with a priority of 70. The responsive layout seamlessly embraces the seventh KPI widget, wrapping rows appropriately. No backend files changed.
+
 
 
 
@@ -183,11 +185,12 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Application shell structure
 - [x] Basic routing to shell
 - [x] Dashboard screen contract
-- [/] Dashboard final UI (Sales Today, Total Customers, Products, Low Stock, Total Suppliers & Today's Transactions KPIs with full data states)
+- [/] Dashboard final UI (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions & Outstanding Payments KPIs with full data states)
 - [ ] Data models, types, and schemas implementation
 - [/] Service and mock data implementation (Dashboard foundation created)
 
-**Current frontend stage:** Core Dashboard rendering the fully stateful KPI widgets (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions) via the registry.
+**Current frontend stage:** Core Dashboard rendering the fully stateful KPI widgets (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions, Outstanding Payments) via the registry.
+
 
 
 

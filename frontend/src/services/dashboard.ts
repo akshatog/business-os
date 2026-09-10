@@ -4,7 +4,8 @@ import {
   fetchMockTotalProducts, type MockTotalProductsResponse,
   fetchMockLowStock, type MockLowStockResponse,
   fetchMockTotalSuppliers, type MockTotalSuppliersResponse,
-  fetchMockTodaysTransactions, type MockTodaysTransactionsResponse
+  fetchMockTodaysTransactions, type MockTodaysTransactionsResponse,
+  fetchMockOutstandingPayments, type MockOutstandingPaymentsResponse
 } from "@/mocks/dashboard";
 
 /**
@@ -53,4 +54,12 @@ export async function getTotalSuppliers(): Promise<MockTotalSuppliersResponse> {
  */
 export async function getTodaysTransactions(): Promise<MockTodaysTransactionsResponse> {
   return fetchMockTodaysTransactions();
+}
+
+/**
+ * Retrieves the "Outstanding Payments" metric amount.
+ * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
+ */
+export async function getOutstandingPayments(): Promise<MockOutstandingPaymentsResponse> {
+  return fetchMockOutstandingPayments();
 }
