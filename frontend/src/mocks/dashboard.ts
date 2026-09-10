@@ -48,3 +48,37 @@ export async function fetchMockTotalProducts(): Promise<MockTotalProductsRespons
     }, 400);
   });
 }
+
+export interface MockLowStockResponse {
+  lowStockCount: number | null;
+}
+
+export const MOCK_LOW_STOCK: MockLowStockResponse = {
+  lowStockCount: 12,
+};
+
+export async function fetchMockLowStock(): Promise<MockLowStockResponse> {
+  // Simulate network delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_LOW_STOCK);
+    }, 400);
+  });
+}
+
+export interface MockTotalSuppliersResponse {
+  totalSuppliers: number | null;
+}
+
+export const MOCK_TOTAL_SUPPLERS: MockTotalSuppliersResponse = {
+  totalSuppliers: 45,
+};
+
+export async function fetchMockTotalSuppliers(): Promise<MockTotalSuppliersResponse> {
+  // Simulate network delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_TOTAL_SUPPLERS);
+    }, 400);
+  });
+}
