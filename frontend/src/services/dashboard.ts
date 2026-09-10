@@ -3,7 +3,8 @@ import {
   fetchMockTotalCustomers, type MockTotalCustomersResponse,
   fetchMockTotalProducts, type MockTotalProductsResponse,
   fetchMockLowStock, type MockLowStockResponse,
-  fetchMockTotalSuppliers, type MockTotalSuppliersResponse
+  fetchMockTotalSuppliers, type MockTotalSuppliersResponse,
+  fetchMockTodaysTransactions, type MockTodaysTransactionsResponse
 } from "@/mocks/dashboard";
 
 /**
@@ -44,4 +45,12 @@ export async function getLowStockCount(): Promise<MockLowStockResponse> {
  */
 export async function getTotalSuppliers(): Promise<MockTotalSuppliersResponse> {
   return fetchMockTotalSuppliers();
+}
+
+/**
+ * Retrieves the "Today's Transactions" metric count.
+ * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
+ */
+export async function getTodaysTransactions(): Promise<MockTodaysTransactionsResponse> {
+  return fetchMockTodaysTransactions();
 }

@@ -82,3 +82,20 @@ export async function fetchMockTotalSuppliers(): Promise<MockTotalSuppliersRespo
     }, 400);
   });
 }
+
+export interface MockTodaysTransactionsResponse {
+  todaysTransactions: number | null;
+}
+
+export const MOCK_TODAYS_TRANSACTIONS: MockTodaysTransactionsResponse = {
+  todaysTransactions: 284,
+};
+
+export async function fetchMockTodaysTransactions(): Promise<MockTodaysTransactionsResponse> {
+  // Simulate network delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_TODAYS_TRANSACTIONS);
+    }, 400);
+  });
+}

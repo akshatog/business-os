@@ -4,6 +4,7 @@ import { TotalCustomersWidget } from "@/core/components/dashboard/TotalCustomers
 import { TotalProductsWidget } from "@/core/components/dashboard/TotalProductsWidget";
 import { LowStockWidget } from "@/core/components/dashboard/LowStockWidget";
 import { TotalSuppliersWidget } from "@/core/components/dashboard/TotalSuppliersWidget";
+import { TodaysTransactionsWidget } from "@/core/components/dashboard/TodaysTransactionsWidget";
 
 export const CORE_WIDGETS: DashboardWidget[] = [
   {
@@ -40,5 +41,12 @@ export const CORE_WIDGETS: DashboardWidget[] = [
     component: TotalSuppliersWidget,
     requiredPermission: "manage_suppliers",
     priority: 50,
+  },
+  {
+    id: "core-todays-transactions",
+    title: "Today's Transactions",
+    component: TodaysTransactionsWidget,
+    requiredPermission: "create_sale",
+    priority: 60,
   },
 ];
