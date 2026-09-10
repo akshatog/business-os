@@ -1,4 +1,8 @@
-import { fetchMockSalesToday, type MockSalesTodayResponse, fetchMockTotalCustomers, type MockTotalCustomersResponse } from "@/mocks/dashboard";
+import {
+  fetchMockSalesToday, type MockSalesTodayResponse,
+  fetchMockTotalCustomers, type MockTotalCustomersResponse,
+  fetchMockTotalProducts, type MockTotalProductsResponse
+} from "@/mocks/dashboard";
 
 /**
  * Retrieves the "Sales Today" metric.
@@ -14,4 +18,12 @@ export async function getSalesToday(): Promise<MockSalesTodayResponse> {
  */
 export async function getTotalCustomers(): Promise<MockTotalCustomersResponse> {
   return fetchMockTotalCustomers();
+}
+
+/**
+ * Retrieves the "Total Products" metric.
+ * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
+ */
+export async function getTotalProducts(): Promise<MockTotalProductsResponse> {
+  return fetchMockTotalProducts();
 }
