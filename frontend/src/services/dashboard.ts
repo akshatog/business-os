@@ -1,74 +1,79 @@
+import type { Sale } from "@/types/sale";
 import {
-  fetchMockSalesToday, type MockSalesTodayResponse,
-  fetchMockTotalCustomers, type MockTotalCustomersResponse,
-  fetchMockTotalProducts, type MockTotalProductsResponse,
-  fetchMockLowStock, type MockLowStockResponse,
-  fetchMockTotalSuppliers, type MockTotalSuppliersResponse,
-  fetchMockTodaysTransactions, type MockTodaysTransactionsResponse,
-  fetchMockOutstandingPayments, type MockOutstandingPaymentsResponse,
-  fetchMockRecentSales, type MockRecentSalesResponse
+  fetchMockSalesToday,
+  fetchMockTotalCustomers,
+  fetchMockTotalProducts,
+  fetchMockLowStock,
+  fetchMockTotalSuppliers,
+  fetchMockTodaysTransactions,
+  fetchMockOutstandingPayments,
+  fetchMockRecentSales
 } from "@/mocks/dashboard";
 
-/**
- * Retrieves the "Sales Today" metric.
- * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
- */
-export async function getSalesToday(): Promise<MockSalesTodayResponse> {
+export interface SalesTodayResponse {
+  totalSalesPaise: number | null;
+}
+
+export interface TotalCustomersResponse {
+  totalCustomers: number | null;
+}
+
+export interface TotalProductsResponse {
+  totalProducts: number | null;
+}
+
+export interface LowStockResponse {
+  lowStockCount: number | null;
+}
+
+export interface TotalSuppliersResponse {
+  totalSuppliers: number | null;
+}
+
+export interface TodaysTransactionsResponse {
+  todaysTransactions: number | null;
+}
+
+export interface OutstandingPaymentsResponse {
+  outstandingPaise: number | null;
+}
+
+export type DashboardRecentSale = Pick<Sale, "id" | "invoiceNumber" | "totalAmountMinor" | "status" | "createdAt"> & {
+  customerName: string;
+};
+
+export interface RecentSalesResponse {
+  recentSales: DashboardRecentSale[];
+}
+
+export async function getSalesToday(): Promise<SalesTodayResponse> {
   return fetchMockSalesToday();
 }
 
-/**
- * Retrieves the "Total Customers" metric.
- * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
- */
-export async function getTotalCustomers(): Promise<MockTotalCustomersResponse> {
+export async function getTotalCustomers(): Promise<TotalCustomersResponse> {
   return fetchMockTotalCustomers();
 }
 
-/**
- * Retrieves the "Total Products" metric.
- * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
- */
-export async function getTotalProducts(): Promise<MockTotalProductsResponse> {
+export async function getTotalProducts(): Promise<TotalProductsResponse> {
   return fetchMockTotalProducts();
 }
 
-/**
- * Retrieves the "Low Stock" metric count.
- * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
- */
-export async function getLowStockCount(): Promise<MockLowStockResponse> {
+export async function getLowStockCount(): Promise<LowStockResponse> {
   return fetchMockLowStock();
 }
 
-/**
- * Retrieves the "Total Suppliers" metric count.
- * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
- */
-export async function getTotalSuppliers(): Promise<MockTotalSuppliersResponse> {
+export async function getTotalSuppliers(): Promise<TotalSuppliersResponse> {
   return fetchMockTotalSuppliers();
 }
 
-/**
- * Retrieves the "Today's Transactions" metric count.
- * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
- */
-export async function getTodaysTransactions(): Promise<MockTodaysTransactionsResponse> {
+export async function getTodaysTransactions(): Promise<TodaysTransactionsResponse> {
   return fetchMockTodaysTransactions();
 }
 
-/**
- * Retrieves the "Outstanding Payments" metric amount.
- * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
- */
-export async function getOutstandingPayments(): Promise<MockOutstandingPaymentsResponse> {
+export async function getOutstandingPayments(): Promise<OutstandingPaymentsResponse> {
   return fetchMockOutstandingPayments();
 }
 
-/**
- * Retrieves the "Recent Sales" list.
- * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
- */
-export async function getRecentSales(): Promise<MockRecentSalesResponse> {
+export async function getRecentSales(): Promise<RecentSalesResponse> {
   return fetchMockRecentSales();
 }

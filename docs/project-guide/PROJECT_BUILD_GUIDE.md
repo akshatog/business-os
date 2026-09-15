@@ -173,6 +173,8 @@ This is the actual sequence of how the frontend arrived at its current state:
 15. **Outstanding Payments KPI Widget (Step 10):** The seventh core business widget ("Outstanding Payments") was added. The component lives in `frontend/src/core/components/dashboard/OutstandingPaymentsWidget.tsx` and fetches data from the mock service. The financial figure is natively handled in integer paise and formatted visually to Indian Rupees. It is registered through the dashboard registry using the existing `view_financials` permission with a priority of 70. The responsive layout seamlessly embraces the seventh KPI widget, wrapping rows appropriately. No backend files changed.
 16. **Recent Sales Widget (Step 11):** The first non-KPI dashboard widget ("Recent Sales") was added. The component lives in `frontend/src/core/components/dashboard/RecentSalesWidget.tsx` and fetches data from the mock service. It presents a compact table containing the reference, customer name, amount (in INR), and a status badge. It is registered through the dashboard registry using the `view_financials` permission with a priority of 80. To accommodate its tabular nature, the widget's internal wrapper gracefully applies a `md:col-span-2 lg:col-span-2` rule, allowing it to span wider inside the existing CSS grid without requiring any fragile refactoring of the global dashboard layout. No backend files changed.
 17. **Dashboard Permission Awareness (Step 12):** The dashboard's permission-aware widget visibility behavior was implemented. A minimal `usePermissions` hook was introduced at `frontend/src/hooks/use-permissions.ts` to act as a clean abstraction for the current user's permissions, preserving the ease of connecting a real authentication state later. The `Dashboard.tsx` page was updated to actively consume this hook and filter out any widgets from the registry if the active user lacks the required permission. This guarantees the dashboard only displays widgets the user is authorized to see, while adhering strictly to existing UI/UX and architectural guidelines. No backend files changed.
+18. **Core Dashboard Quick Actions (Step 14):** The implementation of the Quick Actions widget was evaluated against the dashboard contract. The contract requires Quick Actions to navigate to core routes like `/app/checkout` and `/app/inventory/new`. Since the core application does not currently have these underlying routes or screens built, implementing the Quick Actions panel now would require either inventing fake routes or building a useless placeholder component with an empty actions list. Following the architectural rule to avoid over-engineering placeholders, the Quick Actions widget implementation is deferred until its required core routes actually exist in the application.
+19. **Core Data Models and Zod Schemas (Step 15):** The core entity data models were implemented in `frontend/src/types/` using Zod schemas to act as the single source of truth for both runtime validation and TypeScript types. Schemas were created for `Business`, `User`, `Product`, `Customer`, `Supplier`, `Sale`, `Payment`, `StockMovement`, `Purchase`, and `AuditLog` precisely mirroring the requirements in `DATA_MODEL.md`. This foundational task resolves a major blocked prerequisite, enabling the future Checkout and Onboarding screens to rely on real type contracts instead of mock types. No backend files changed.
 
 
 
@@ -189,10 +191,10 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Basic routing to shell
 - [x] Dashboard screen contract
 - [/] Dashboard final UI (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions, Outstanding Payments & Recent Sales widgets with full data states)
-- [ ] Data models, types, and schemas implementation
+- [x] Data models, types, and schemas implementation
 - [/] Service and mock data implementation (Dashboard foundation created)
 
-**Current frontend stage:** Core Dashboard rendering the full suite of stateful KPI widgets and the Recent Sales table widget via the registry.
+**Current frontend stage:** Core data models and Zod schemas established. Ready to begin development of core interactive screens (Onboarding/Checkout).
 
 
 

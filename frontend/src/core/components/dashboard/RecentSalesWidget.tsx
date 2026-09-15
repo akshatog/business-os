@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getRecentSales } from "@/services/dashboard";
-import type { MockRecentSale } from "@/mocks/dashboard";
+import { getRecentSales, type DashboardRecentSale } from "@/services/dashboard";
 import { formatPaiseToRupees } from "@/lib/money";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
@@ -15,7 +14,7 @@ import {
 } from "@/core/components/ui/table";
 
 export function RecentSalesWidget() {
-  const [recentSales, setRecentSales] = useState<MockRecentSale[] | null>(null);
+  const [recentSales, setRecentSales] = useState<DashboardRecentSale[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -55,13 +54,14 @@ export function RecentSalesWidget() {
       });
   }, []);
 
-  const getStatusBadge = (status: MockRecentSale["status"]) => {
+  const getStatusBadge = (status: DashboardRecentSale["status"]) => {
     switch (status) {
       case "completed":
         return <Badge variant="default" className="bg-green-600 hover:bg-green-700">Completed</Badge>;
-      case "pending":
-        return <Badge variant="secondary">Pending</Badge>;
+      case "voided":
+        return <Badge variant="secondary">Voided</Badge>;
       case "refunded":
+      case "partially_refunded":
         return <Badge variant="destructive">Refunded</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
@@ -129,10 +129,10 @@ export function RecentSalesWidget() {
         <TableBody>
           {recentSales.map((sale) => (
             <TableRow key={sale.id}>
-              <TableCell className="font-medium text-xs">{sale.reference}</TableCell>
+              <TableCell className="font-medium text-xs">{sale.invoiceNumber}</TableCell>
               <TableCell className="text-xs">{sale.customerName}</TableCell>
               <TableCell className="text-right text-xs">
-                {formatPaiseToRupees(sale.amountPaise)}
+                {formatPaiseToRupees(sale.totalAmountMinor)}
               </TableCell>
               <TableCell className="text-right">
                 {getStatusBadge(sale.status)}
