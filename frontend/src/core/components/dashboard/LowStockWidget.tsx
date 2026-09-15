@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getLowStockCount } from "@/services/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 
 export function LowStockWidget() {
   const [lowStockCount, setLowStockCount] = useState<number | null>(null);
@@ -98,26 +99,14 @@ export function LowStockWidget() {
   };
 
   return (
-    <Card>
+    <Card className="hover:shadow-md transition-all duration-200 hover:border-destructive/30">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           Low Stock
         </CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-          aria-hidden="true"
-        >
-          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-          <path d="M12 9v4" />
-          <path d="M12 17h.01" />
-        </svg>
+        <div className="h-8 w-8 rounded-full bg-destructive/10 flex items-center justify-center">
+          <AlertTriangle className="h-4 w-4 text-destructive" />
+        </div>
       </CardHeader>
       <CardContent>
         {renderContent()}

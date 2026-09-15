@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getTodaysTransactions } from "@/services/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
+import { Receipt } from "lucide-react";
 
 export function TodaysTransactionsWidget() {
   const [todaysTransactions, setTodaysTransactions] = useState<number | null>(null);
@@ -98,26 +99,14 @@ export function TodaysTransactionsWidget() {
   };
 
   return (
-    <Card>
+    <Card className="hover:shadow-md transition-all duration-200 hover:border-indigo-500/30">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           Today's Transactions
         </CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-          aria-hidden="true"
-        >
-          <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z" />
-          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
-          <path d="M12 17V7" />
-        </svg>
+        <div className="h-8 w-8 rounded-full bg-indigo-500/10 flex items-center justify-center">
+          <Receipt className="h-4 w-4 text-indigo-500" />
+        </div>
       </CardHeader>
       <CardContent>
         {renderContent()}

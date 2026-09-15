@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getTotalSuppliers } from "@/services/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
+import { Truck } from "lucide-react";
 
 export function TotalSuppliersWidget() {
   const [totalSuppliers, setTotalSuppliers] = useState<number | null>(null);
@@ -98,28 +99,14 @@ export function TotalSuppliersWidget() {
   };
 
   return (
-    <Card>
+    <Card className="hover:shadow-md transition-all duration-200 hover:border-emerald-500/30">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           Total Suppliers
         </CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-          aria-hidden="true"
-        >
-          <path d="M10 17h4V5H2v12h3" />
-          <path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5" />
-          <path d="M14 17h1" />
-          <circle cx="7.5" cy="17.5" r="2.5" />
-          <circle cx="17.5" cy="17.5" r="2.5" />
-        </svg>
+        <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+          <Truck className="h-4 w-4 text-emerald-500" />
+        </div>
       </CardHeader>
       <CardContent>
         {renderContent()}

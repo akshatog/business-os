@@ -145,7 +145,7 @@ export function RecentSalesWidget() {
   };
 
   return (
-    <Card className="md:col-span-2 lg:col-span-2">
+    <Card className="md:col-span-2 lg:col-span-2 hover:shadow-md transition-all duration-200 hover:border-primary/20">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="space-y-1">
           <CardTitle className="text-base font-semibold">

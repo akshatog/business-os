@@ -2,7 +2,11 @@ import { NavLink } from 'react-router-dom';
 import { Home, Settings, LayoutDashboard, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export function Sidebar() {
+interface SidebarProps {
+  onNavigate?: () => void;
+}
+
+export function Sidebar({ onNavigate }: SidebarProps = {}) {
   const navigation = [
     { name: 'Dashboard', href: '/app', icon: Home },
     { name: 'Checkout', href: '/app/checkout', icon: ShoppingCart },
@@ -21,6 +25,7 @@ export function Sidebar() {
             <NavLink
               key={item.name}
               to={item.href}
+              onClick={onNavigate}
               className={({ isActive }) =>
                 cn(
                   isActive

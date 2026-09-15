@@ -3,6 +3,7 @@ import { getOutstandingPayments } from "@/services/dashboard";
 import { formatPaiseToRupees } from "@/lib/money";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
+import { Clock } from "lucide-react";
 
 export function OutstandingPaymentsWidget() {
   const [outstandingPaise, setOutstandingPaise] = useState<number | null>(null);
@@ -99,26 +100,14 @@ export function OutstandingPaymentsWidget() {
   };
 
   return (
-    <Card>
+    <Card className="hover:shadow-md transition-all duration-200 hover:border-amber-500/30">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           Outstanding Payments
         </CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-          aria-hidden="true"
-        >
-          <rect width="20" height="12" x="2" y="6" rx="2" />
-          <circle cx="12" cy="12" r="2" />
-          <path d="M6 12h.01M18 12h.01" />
-        </svg>
+        <div className="h-8 w-8 rounded-full bg-amber-500/10 flex items-center justify-center">
+          <Clock className="h-4 w-4 text-amber-500" />
+        </div>
       </CardHeader>
       <CardContent>
         {renderContent()}
