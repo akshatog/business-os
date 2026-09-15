@@ -1,12 +1,17 @@
 import { composeDashboardWidgets, type DashboardWidget } from "@/core/dashboard/registry";
 import { CORE_WIDGETS } from "@/core/dashboard/core-widgets";
+import { usePermissions } from "@/hooks/use-permissions";
 
 // Conceptually, module widgets will be injected here later based on the active business type.
 // For now, the registry contains only the core widgets.
 const MODULE_WIDGETS: DashboardWidget[] = [];
 
 export function Dashboard() {
-  const activeWidgets = composeDashboardWidgets(CORE_WIDGETS, MODULE_WIDGETS);
+  const { hasPermission } = usePermissions();
+
+  const activeWidgets = composeDashboardWidgets(CORE_WIDGETS, MODULE_WIDGETS).filter(
+    (widget) => !widget.requiredPermission || hasPermission(widget.requiredPermission)
+  );
 
   return (
     <div className="space-y-6">

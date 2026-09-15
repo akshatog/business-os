@@ -171,6 +171,9 @@ This is the actual sequence of how the frontend arrived at its current state:
 13. **Total Suppliers KPI Widget (Step 8):** The fifth core business widget ("Total Suppliers") was added. The component lives in `frontend/src/core/components/dashboard/TotalSuppliersWidget.tsx` and fetches data from the mock service. It displays the count of active suppliers. It is registered through the dashboard registry using the `manage_suppliers` permission with a priority of 50. The responsive grid flawlessly incorporates this fifth KPI widget. No backend files changed.
 14. **Today's Transactions KPI Widget (Step 9):** The sixth core business widget ("Today's Transactions") was added. The component lives in `frontend/src/core/components/dashboard/TodaysTransactionsWidget.tsx` and fetches data from the mock service. It displays the count of transactions today. It is registered through the dashboard registry using the `create_sale` permission with a priority of 60. This permission correctly maps to any role authorized to operate the POS. The responsive grid successfully accommodates the sixth KPI widget. No backend files changed.
 15. **Outstanding Payments KPI Widget (Step 10):** The seventh core business widget ("Outstanding Payments") was added. The component lives in `frontend/src/core/components/dashboard/OutstandingPaymentsWidget.tsx` and fetches data from the mock service. The financial figure is natively handled in integer paise and formatted visually to Indian Rupees. It is registered through the dashboard registry using the existing `view_financials` permission with a priority of 70. The responsive layout seamlessly embraces the seventh KPI widget, wrapping rows appropriately. No backend files changed.
+16. **Recent Sales Widget (Step 11):** The first non-KPI dashboard widget ("Recent Sales") was added. The component lives in `frontend/src/core/components/dashboard/RecentSalesWidget.tsx` and fetches data from the mock service. It presents a compact table containing the reference, customer name, amount (in INR), and a status badge. It is registered through the dashboard registry using the `view_financials` permission with a priority of 80. To accommodate its tabular nature, the widget's internal wrapper gracefully applies a `md:col-span-2 lg:col-span-2` rule, allowing it to span wider inside the existing CSS grid without requiring any fragile refactoring of the global dashboard layout. No backend files changed.
+17. **Dashboard Permission Awareness (Step 12):** The dashboard's permission-aware widget visibility behavior was implemented. A minimal `usePermissions` hook was introduced at `frontend/src/hooks/use-permissions.ts` to act as a clean abstraction for the current user's permissions, preserving the ease of connecting a real authentication state later. The `Dashboard.tsx` page was updated to actively consume this hook and filter out any widgets from the registry if the active user lacks the required permission. This guarantees the dashboard only displays widgets the user is authorized to see, while adhering strictly to existing UI/UX and architectural guidelines. No backend files changed.
+
 
 
 
@@ -185,11 +188,12 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Application shell structure
 - [x] Basic routing to shell
 - [x] Dashboard screen contract
-- [/] Dashboard final UI (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions & Outstanding Payments KPIs with full data states)
+- [/] Dashboard final UI (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions, Outstanding Payments & Recent Sales widgets with full data states)
 - [ ] Data models, types, and schemas implementation
 - [/] Service and mock data implementation (Dashboard foundation created)
 
-**Current frontend stage:** Core Dashboard rendering the fully stateful KPI widgets (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions, Outstanding Payments) via the registry.
+**Current frontend stage:** Core Dashboard rendering the full suite of stateful KPI widgets and the Recent Sales table widget via the registry.
+
 
 
 

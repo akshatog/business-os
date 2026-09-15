@@ -5,7 +5,8 @@ import {
   fetchMockLowStock, type MockLowStockResponse,
   fetchMockTotalSuppliers, type MockTotalSuppliersResponse,
   fetchMockTodaysTransactions, type MockTodaysTransactionsResponse,
-  fetchMockOutstandingPayments, type MockOutstandingPaymentsResponse
+  fetchMockOutstandingPayments, type MockOutstandingPaymentsResponse,
+  fetchMockRecentSales, type MockRecentSalesResponse
 } from "@/mocks/dashboard";
 
 /**
@@ -62,4 +63,12 @@ export async function getTodaysTransactions(): Promise<MockTodaysTransactionsRes
  */
 export async function getOutstandingPayments(): Promise<MockOutstandingPaymentsResponse> {
   return fetchMockOutstandingPayments();
+}
+
+/**
+ * Retrieves the "Recent Sales" list.
+ * Currently uses mock data. Will be replaced by a real API call when the backend is ready.
+ */
+export async function getRecentSales(): Promise<MockRecentSalesResponse> {
+  return fetchMockRecentSales();
 }

@@ -116,3 +116,62 @@ export async function fetchMockOutstandingPayments(): Promise<MockOutstandingPay
     }, 400);
   });
 }
+
+export interface MockRecentSale {
+  id: string;
+  reference: string;
+  customerName: string;
+  amountPaise: number;
+  status: "completed" | "pending" | "refunded";
+  timestamp: string;
+}
+
+export interface MockRecentSalesResponse {
+  recentSales: MockRecentSale[];
+}
+
+export const MOCK_RECENT_SALES: MockRecentSalesResponse = {
+  recentSales: [
+    {
+      id: "sale-001",
+      reference: "INV-2023-001",
+      customerName: "Rahul Sharma",
+      amountPaise: 125000, // ₹1,250.00
+      status: "completed",
+      timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(), // 15 mins ago
+    },
+    {
+      id: "sale-002",
+      reference: "INV-2023-002",
+      customerName: "Walk-in Customer",
+      amountPaise: 45000, // ₹450.00
+      status: "completed",
+      timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45 mins ago
+    },
+    {
+      id: "sale-003",
+      reference: "INV-2023-003",
+      customerName: "Priya Patel",
+      amountPaise: 340050, // ₹3,400.50
+      status: "pending",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+    },
+    {
+      id: "sale-004",
+      reference: "INV-2023-004",
+      customerName: "Amit Kumar",
+      amountPaise: 89000, // ₹890.00
+      status: "refunded",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), // 5 hours ago
+    },
+  ],
+};
+
+export async function fetchMockRecentSales(): Promise<MockRecentSalesResponse> {
+  // Simulate network delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_RECENT_SALES);
+    }, 400);
+  });
+}
