@@ -177,6 +177,7 @@ This is the actual sequence of how the frontend arrived at its current state:
 19. **Core Data Models and Zod Schemas (Step 15):** The core entity data models were implemented in `frontend/src/types/` using Zod schemas to act as the single source of truth for both runtime validation and TypeScript types. Schemas were created for `Business`, `User`, `Product`, `Customer`, `Supplier`, `Sale`, `Payment`, `StockMovement`, `Purchase`, and `AuditLog` precisely mirroring the requirements in `DATA_MODEL.md`. This foundational task resolves a major blocked prerequisite, enabling the future Checkout and Onboarding screens to rely on real type contracts instead of mock types. No backend files changed.
 20. **Core Dashboard Type Alignment (Step 16):** The duplicate definitions in `frontend/src/mocks/dashboard.ts` were removed. Dashboard metrics now accurately represent their contracts in `frontend/src/services/dashboard.ts`, and the UI components strictly rely on data shapes composed from the canonical Core Zod schemas (like `Sale`) rather than independent mock definitions, fixing the architecture data flow.
 21. **Core Business Onboarding Screen (Step 17):** The Business Onboarding UI was created at `frontend/src/core/pages/Onboarding.tsx` and routed to `/onboarding`. It utilizes `react-hook-form` and `zod` to validate the fields defined in the `businessSchema`. A mock service was created in `frontend/src/services/business.ts` to simulate the `PATCH /api/business/me` backend API without touching real backend code. The existing `/` to `/app` dashboard redirect remains perfectly intact.
+22. **Checkout Product Search (Step 19):** The product search functionality for the core Checkout screen was implemented in `frontend/src/core/pages/Checkout.tsx`. It relies strictly on the `Product` Zod schema and fetches data via a new mock service (`frontend/src/services/products.ts` and `frontend/src/mocks/products.ts`). It handles debounced searching, loading, error, empty, and matching states accurately, and formats prices using the core `formatPaiseToRupees` utility, seamlessly mirroring the architectural flow of UI → service → mock. Cart, customer selection, and payment flows remain deferred.
 
 
 
@@ -196,8 +197,9 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Data models, types, and schemas implementation
 - [/] Service and mock data implementation (Dashboard and Onboarding foundation created)
 - [x] Core Business Onboarding Screen
+- [x] Checkout Product Search
 
-**Current frontend stage:** Core interactive screens are actively being developed. The Onboarding screen is completed. Ready to begin Checkout.
+**Current frontend stage:** Core interactive screens are actively being developed. The Onboarding screen is completed. Checkout Product Search implemented. Ready to continue Checkout cart/payment flows.
 
 
 

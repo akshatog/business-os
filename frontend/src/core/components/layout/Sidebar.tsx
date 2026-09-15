@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Settings, LayoutDashboard } from 'lucide-react';
+import { Home, Settings, LayoutDashboard, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function Sidebar() {
   const navigation = [
     { name: 'Dashboard', href: '/app', icon: Home },
+    { name: 'Checkout', href: '/app/checkout', icon: ShoppingCart },
     { name: 'Settings', href: '/app/settings', icon: Settings },
     { name: 'Design System', href: '/design-system', icon: LayoutDashboard },
   ];
