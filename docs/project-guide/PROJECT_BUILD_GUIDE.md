@@ -175,6 +175,8 @@ This is the actual sequence of how the frontend arrived at its current state:
 17. **Dashboard Permission Awareness (Step 12):** The dashboard's permission-aware widget visibility behavior was implemented. A minimal `usePermissions` hook was introduced at `frontend/src/hooks/use-permissions.ts` to act as a clean abstraction for the current user's permissions, preserving the ease of connecting a real authentication state later. The `Dashboard.tsx` page was updated to actively consume this hook and filter out any widgets from the registry if the active user lacks the required permission. This guarantees the dashboard only displays widgets the user is authorized to see, while adhering strictly to existing UI/UX and architectural guidelines. No backend files changed.
 18. **Core Dashboard Quick Actions (Step 14):** The implementation of the Quick Actions widget was evaluated against the dashboard contract. The contract requires Quick Actions to navigate to core routes like `/app/checkout` and `/app/inventory/new`. Since the core application does not currently have these underlying routes or screens built, implementing the Quick Actions panel now would require either inventing fake routes or building a useless placeholder component with an empty actions list. Following the architectural rule to avoid over-engineering placeholders, the Quick Actions widget implementation is deferred until its required core routes actually exist in the application.
 19. **Core Data Models and Zod Schemas (Step 15):** The core entity data models were implemented in `frontend/src/types/` using Zod schemas to act as the single source of truth for both runtime validation and TypeScript types. Schemas were created for `Business`, `User`, `Product`, `Customer`, `Supplier`, `Sale`, `Payment`, `StockMovement`, `Purchase`, and `AuditLog` precisely mirroring the requirements in `DATA_MODEL.md`. This foundational task resolves a major blocked prerequisite, enabling the future Checkout and Onboarding screens to rely on real type contracts instead of mock types. No backend files changed.
+20. **Core Dashboard Type Alignment (Step 16):** The duplicate definitions in `frontend/src/mocks/dashboard.ts` were removed. Dashboard metrics now accurately represent their contracts in `frontend/src/services/dashboard.ts`, and the UI components strictly rely on data shapes composed from the canonical Core Zod schemas (like `Sale`) rather than independent mock definitions, fixing the architecture data flow.
+21. **Core Business Onboarding Screen (Step 17):** The Business Onboarding UI was created at `frontend/src/core/pages/Onboarding.tsx` and routed to `/onboarding`. It utilizes `react-hook-form` and `zod` to validate the fields defined in the `businessSchema`. A mock service was created in `frontend/src/services/business.ts` to simulate the `PATCH /api/business/me` backend API without touching real backend code. The existing `/` to `/app` dashboard redirect remains perfectly intact.
 
 
 
@@ -190,11 +192,12 @@ This is the actual sequence of how the frontend arrived at its current state:
 - [x] Application shell structure
 - [x] Basic routing to shell
 - [x] Dashboard screen contract
-- [/] Dashboard final UI (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions, Outstanding Payments & Recent Sales widgets with full data states)
+- [x] Dashboard final UI (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions, Outstanding Payments & Recent Sales widgets with full data states)
 - [x] Data models, types, and schemas implementation
-- [/] Service and mock data implementation (Dashboard foundation created)
+- [/] Service and mock data implementation (Dashboard and Onboarding foundation created)
+- [x] Core Business Onboarding Screen
 
-**Current frontend stage:** Core data models and Zod schemas established. Ready to begin development of core interactive screens (Onboarding/Checkout).
+**Current frontend stage:** Core interactive screens are actively being developed. The Onboarding screen is completed. Ready to begin Checkout.
 
 
 
