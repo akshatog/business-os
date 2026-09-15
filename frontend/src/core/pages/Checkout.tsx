@@ -2,11 +2,17 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/core/components/ui/card';
 import { Input } from '@/core/components/ui/input';
 import { Button } from '@/core/components/ui/button';
-import { Search, ShoppingCart, UserPlus, CreditCard, Loader2, AlertCircle } from 'lucide-react';
-import type { SaleItem } from '@/types/sale';
+import { Search, ShoppingCart, CreditCard, Loader2, AlertCircle, Minus, Plus, Trash2, X } from 'lucide-react';
 import type { Product } from '@/types/product';
+import type { Customer } from '@/types/customer';
+
+interface CartItem {
+  product: Product;
+  quantity: number;
+}
 import { formatPaiseToRupees } from '@/lib/money';
 import { searchProducts } from '@/services/products';
+import { searchCustomers } from '@/services/customers';
 
 export function Checkout() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -50,14 +56,72 @@ export function Checkout() {
     performSearch();
   }, [debouncedQuery, searchTrigger]);
   
-  // Step 18 scope: Structural foundation only. 
-  // Step 19 scope: Search functionality.
-  // Interactive cart state and payments are deferred.
-  const cartItems: SaleItem[] = []; 
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [debouncedCustomerSearch, setDebouncedCustomerSearch] = useState('');
+  const [customerResults, setCustomerResults] = useState<Customer[]>([]);
+  const [isSearchingCustomer, setIsSearchingCustomer] = useState(false);
+  const [customerError, setCustomerError] = useState<string | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedCustomerSearch(customerSearch);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [customerSearch]);
+
+  useEffect(() => {
+    async function performCustomerSearch() {
+      if (!debouncedCustomerSearch.trim()) {
+        setCustomerResults([]);
+        setCustomerError(null);
+        return;
+      }
+
+      setIsSearchingCustomer(true);
+      setCustomerError(null);
+
+      try {
+        const results = await searchCustomers(debouncedCustomerSearch);
+        setCustomerResults(results);
+      } catch (err) {
+        setCustomerError(err instanceof Error ? err.message : 'Error searching customers');
+      } finally {
+        setIsSearchingCustomer(false);
+      }
+    }
+
+    performCustomerSearch();
+  }, [debouncedCustomerSearch]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  const addToCart = (product: Product) => {
+    setCartItems(prev => {
+      const existing = prev.find(item => item.product.id === product.id);
+      if (existing) {
+        return prev.map(item => item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+      }
+      return [...prev, { product, quantity: 1 }];
+    });
+  };
+
+  const updateQuantity = (productId: string, delta: number) => {
+    setCartItems(prev => prev.map(item => {
+      if (item.product.id === productId) {
+        return { ...item, quantity: Math.max(1, item.quantity + delta) };
+      }
+      return item;
+    }));
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCartItems(prev => prev.filter(item => item.product.id !== productId));
+  };
   
-  const subtotalMinor = 0;
+  const subtotalMinor = cartItems.reduce((sum, item) => sum + (item.product.priceMinor * item.quantity), 0);
   const taxAmountMinor = 0;
-  const totalAmountMinor = 0;
+  const totalAmountMinor = subtotalMinor + taxAmountMinor;
 
   return (
     <div className="flex h-full flex-col md:flex-row gap-6 p-6">
@@ -122,10 +186,7 @@ export function Checkout() {
                   <div 
                     key={product.id}
                     className="flex items-center justify-between rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-                    onClick={() => {
-                      // Clicking is structurally selectable but deferred cart logic
-                      console.log('Selected product:', product);
-                    }}
+                    onClick={() => addToCart(product)}
                   >
                     <div>
                       <h4 className="font-medium text-sm">{product.name}</h4>
@@ -158,10 +219,66 @@ export function Checkout() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" className="w-full justify-start text-muted-foreground">
-              <UserPlus className="mr-2 h-4 w-4" />
-              Select Customer (Optional)
-            </Button>
+            {selectedCustomer ? (
+              <div className="flex items-center justify-between rounded-md border p-3 bg-muted/30">
+                <div>
+                  <p className="font-medium text-sm">{selectedCustomer.name}</p>
+                  <p className="text-xs text-muted-foreground">{selectedCustomer.phone || selectedCustomer.email || 'No contact info'}</p>
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => setSelectedCustomer(null)} className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search customer (name, phone)..."
+                  className="pl-9"
+                  value={customerSearch}
+                  onChange={(e) => {
+                    setCustomerSearch(e.target.value);
+                    setShowCustomerDropdown(true);
+                  }}
+                  onFocus={() => setShowCustomerDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowCustomerDropdown(false), 200)}
+                />
+
+                {showCustomerDropdown && customerSearch.trim() && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-popover text-popover-foreground border rounded-md shadow-md z-50 max-h-48 overflow-y-auto">
+                    {isSearchingCustomer && (
+                      <div className="p-3 text-center text-sm text-muted-foreground">Searching...</div>
+                    )}
+                    {!isSearchingCustomer && customerError && (
+                      <div className="p-3 text-center text-sm text-destructive">{customerError}</div>
+                    )}
+                    {!isSearchingCustomer && !customerError && customerResults.length === 0 && (
+                      <div className="p-3 text-center text-sm text-muted-foreground">No customers found.</div>
+                    )}
+                    {!isSearchingCustomer && !customerError && customerResults.length > 0 && (
+                      <div className="py-1">
+                        {customerResults.map(customer => (
+                          <div
+                            key={customer.id}
+                            className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
+                            onClick={() => {
+                              setSelectedCustomer(customer);
+                              setCustomerSearch('');
+                              setShowCustomerDropdown(false);
+                            }}
+                          >
+                            <p className="font-medium">{customer.name}</p>
+                            {(customer.phone || customer.email) && (
+                              <p className="text-xs text-muted-foreground">{customer.phone} {customer.phone && customer.email ? '•' : ''} {customer.email}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -181,7 +298,48 @@ export function Checkout() {
               </div>
             ) : (
               <div className="space-y-4">
-                {/* Future: Render SaleItem rows here */}
+                {cartItems.map(item => (
+                  <div key={item.product.id} className="flex flex-col gap-2 rounded-lg border p-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-medium text-sm">{item.product.name}</h4>
+                        <div className="text-muted-foreground text-xs">{formatPaiseToRupees(item.product.priceMinor)} x {item.quantity}</div>
+                      </div>
+                      <div className="font-semibold text-sm">
+                        {formatPaiseToRupees(item.product.priceMinor * item.quantity)}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center gap-1 border rounded-md">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 rounded-none"
+                          onClick={() => updateQuantity(item.product.id, -1)}
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <div className="text-sm font-medium w-8 text-center">{item.quantity}</div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 rounded-none"
+                          onClick={() => updateQuantity(item.product.id, 1)}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={() => removeFromCart(item.product.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </CardContent>
