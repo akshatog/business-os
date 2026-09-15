@@ -95,6 +95,10 @@ export function Checkout() {
     performCustomerSearch();
   }, [debouncedCustomerSearch]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'upi' | 'card'>('cash');
+  const [amountPaidInput, setAmountPaidInput] = useState<string>('');
+
+
 
   const addToCart = (product: Product) => {
     setCartItems(prev => {
@@ -116,12 +120,23 @@ export function Checkout() {
   };
 
   const removeFromCart = (productId: string) => {
-    setCartItems(prev => prev.filter(item => item.product.id !== productId));
+    setCartItems(prev => {
+      const newItems = prev.filter(item => item.product.id !== productId);
+      if (newItems.length === 0) {
+        setAmountPaidInput('');
+        setPaymentMethod('cash');
+      }
+      return newItems;
+    });
   };
   
   const subtotalMinor = cartItems.reduce((sum, item) => sum + (item.product.priceMinor * item.quantity), 0);
   const taxAmountMinor = 0;
   const totalAmountMinor = subtotalMinor + taxAmountMinor;
+
+  const amountPaidMinor = amountPaidInput ? Math.round(parseFloat(amountPaidInput) * 100) || 0 : 0;
+  const remainingMinor = Math.max(0, totalAmountMinor - amountPaidMinor);
+  const changeMinor = Math.max(0, amountPaidMinor - totalAmountMinor);
 
   return (
     <div className="flex h-full flex-col md:flex-row gap-6 p-6">
@@ -359,9 +374,76 @@ export function Checkout() {
               </div>
             </div>
             
-            <Button size="lg" className="w-full" disabled={cartItems.length === 0}>
+            {cartItems.length > 0 && (
+              <div className="w-full space-y-4 pt-2 border-t">
+                <h3 className="font-medium">Payment Details</h3>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    variant={paymentMethod === 'cash' ? 'default' : 'outline'}
+                    onClick={() => setPaymentMethod('cash')}
+                    size="sm"
+                  >
+                    Cash
+                  </Button>
+                  <Button
+                    variant={paymentMethod === 'upi' ? 'default' : 'outline'}
+                    onClick={() => setPaymentMethod('upi')}
+                    size="sm"
+                  >
+                    UPI
+                  </Button>
+                  <Button
+                    variant={paymentMethod === 'card' ? 'default' : 'outline'}
+                    onClick={() => setPaymentMethod('card')}
+                    size="sm"
+                  >
+                    Card
+                  </Button>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-sm text-muted-foreground">Amount Received (₹)</label>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={amountPaidInput}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (Number(val) < 0) return;
+                      setAmountPaidInput(val);
+                    }}
+                    placeholder={(totalAmountMinor / 100).toString()}
+                  />
+                </div>
+
+                {amountPaidInput && (
+                  <div className="space-y-1.5 text-sm pt-2 bg-muted/30 p-3 rounded-md">
+                    {amountPaidMinor < totalAmountMinor ? (
+                      <div className="flex justify-between text-destructive font-medium">
+                        <span>Remaining Balance</span>
+                        <span>{formatPaiseToRupees(remainingMinor)}</span>
+                      </div>
+                    ) : amountPaidMinor > totalAmountMinor ? (
+                      <div className="flex justify-between text-emerald-600 font-medium">
+                        <span>Change Due</span>
+                        <span>{formatPaiseToRupees(changeMinor)}</span>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between text-primary font-medium">
+                        <span>Status</span>
+                        <span>Fully Paid</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <Button size="lg" className="w-full mt-2" disabled={cartItems.length === 0}>
               <CreditCard className="mr-2 h-4 w-4" />
-              Proceed to Payment
+              Complete Sale
             </Button>
           </CardFooter>
         </Card>
