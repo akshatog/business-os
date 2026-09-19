@@ -1,0 +1,238 @@
+# Frontend Project Build Guide
+
+This file is a living record of the frontend work that has actually been built for Business OS. Its purpose is to explain to any new developer what exists now, how it was built, and why it is structured this way.
+
+This document only describes **completed work** in the current implementation.
+
+## What Has Been Built So Far
+
+Business OS is a modular business management platform for offline Indian businesses, with point-of-sale (billing) at its center. The frontend is responsible for the user interface that business owners will interact with (desktop-first, but responsive).
+
+So far, the foundational frontend work has been completed. This includes:
+- The base React application setup.
+- The shared design system and reusable UI components.
+- The main Application Shell (the layout structure wrapping all screens).
+- Basic application routing.
+- The documented contract for the dashboard screen (the plan for the dashboard before it is built).
+- Initial folder structure for future data models, services, and mocks.
+
+## Technologies and Tools Used
+
+### A. Technologies and tools actually used in the current implementation
+
+- **React & TypeScript:** The core library and language for building the interface safely.
+- **Vite:** The build tool that serves and bundles the application quickly.
+- **Tailwind CSS:** Used for writing styles directly in our code through utility classes.
+- **shadcn/ui & Radix UI:** The foundation for our accessible, reusable UI components (like buttons, dialogs, and inputs) that we own and can customize.
+- **Lucide React:** Our chosen icon library.
+- **React Router:** Used to handle navigation between different parts of the application (routing).
+- **clsx & tailwind-merge:** Utilities to safely combine Tailwind CSS classes in our components.
+
+### B. Technologies installed as project foundations but not actively used yet
+
+- **Zustand:** Installed for local state management, but no stores currently exist.
+- **React Hook Form:** Installed for form handling, but no forms are implemented yet.
+- **Zod:** Installed for schema validation, but no schemas are written yet.
+- **TanStack Query:** Installed for server state management, but no API calls are made yet.
+
+## How the Technologies Work Together
+
+The current architecture flows like this:
+
+```text
+Vite (Build Tool & Server)
+  ↓
+React + TypeScript (Core Logic)
+  ↓
+React Router (Navigation/URLs)
+  ↓
+AppLayout Shell (Sidebar + Header)
+  ↓
+React Components (Pages/Screens)
+  ↓
+Tailwind + shadcn/ui (Styling Foundation)
+```
+
+## Frontend Folder Structure
+
+The frontend is structured to separate core generic features from business-specific modules. Here is what currently exists inside `frontend/src/`:
+
+- **`core/`**: Contains everything that applies to any business (not specific to pharmacy or retail).
+  - **`components/ui/`**: Reusable generic components (Button, Card, Input, etc.).
+  - **`components/layout/`**: The application shell (Header, Sidebar, AppLayout).
+- **`styles/`**: Global CSS files, including Tailwind directives and CSS variables for our design system.
+- **`lib/`**: General utilities (e.g., `utils.ts` for Tailwind class merging).
+- **`assets/`**: Static files like images and SVGs.
+- **`mocks/`**: Folders ready for fake data (currently files are empty place-holders).
+- **`services/`**: Folders ready for API communication logic (currently files are empty place-holders).
+- **`types/`**: Folders ready for Zod schemas and TypeScript interfaces (currently files are empty place-holders).
+- **`hooks/` & `store/`**: Folders prepared for state management and custom React hooks (currently files are empty place-holders).
+
+## The Design System
+
+We have established a shared design system to keep the app looking premium, modern, clean, and professional. 
+
+- **Visual Direction:** A clean "SaaS" style designed for business users, avoiding flashy or overly saturated elements.
+- **Color System:** Defined using CSS variables in `index.css` (e.g., `bg-slate-50` for the app background, `--primary`, `--border`, etc.).
+- **Reusable UI:** Instead of styling every screen from scratch, we use the `core/components/ui/` components to maintain perfect consistency.
+
+## The shadcn/ui Foundation
+
+We have added several reusable components into `frontend/src/core/components/ui/`. These currently include:
+
+- **Button**
+- **Card**
+- **Input** & **Label**
+- **Checkbox** & **Switch**
+- **Dialog** & **Sheet**
+- **Dropdown Menu** & **Select**
+- **Table** & **Tabs**
+- **Badge**, **Separator**, **Popover**, **Tooltip**
+
+These components form the building blocks of every screen. We built this foundation first so that future business screens can be assembled rapidly without worrying about basic styling and accessibility.
+
+## The Application Shell
+
+The Application Shell is the surrounding layout that hosts the different screens of the app. It is currently implemented in `AppLayout.tsx`.
+
+It consists of:
+- **Sidebar:** The navigation menu on the left side (hidden on mobile, fixed on desktop).
+- **Header:** The top bar.
+- **Main Content Area:** Where the actual screen content (like the dashboard or checkout) is injected.
+
+```text
+AppLayout
+  ├── Sidebar (Left, Desktop only)
+  ├── Header (Top)
+  └── Main content (Scrollable area)
+```
+
+The shell is responsive. On smaller screens, the sidebar is hidden, leaving only the header and main content.
+
+## Current Routing
+
+Routing is implemented in `App.tsx` using React Router.
+
+- **`/`**: Displays a default Vite welcome/preview screen.
+- **`/app`**: Mounts the `AppLayout` shell. Currently, it renders a placeholder screen ("Application Shell Ready") inside the shell to prove that the layout and design system are successfully connected. 
+
+No actual business screens (like Checkout or Inventory) are routed yet.
+
+## Data, Mocks, Services, and Types Structure
+
+The folders for `mocks/`, `services/`, and `types/` have been created, and files for specific entities (like `sale.ts`, `product.ts`) have been added.
+
+**Important Note:** We have verified against the repository that every single file inside `mocks/`, `services/`, and `types/` currently contains exactly 0 lines of code. They are literally empty files. They exist only as placeholders to establish the structure.
+
+The intended architectural rule is:
+```text
+Mock data  →  Service  →  UI Component
+```
+However, since the files are completely empty, this flow has not yet been actively implemented in code. Similarly, the schema files (like `types/sale.ts`) do not yet contain any Zod definitions.
+
+## Architecture Rules Relevant to Work Done
+
+While many rules exist in `RULES.md`, these have driven the frontend work so far:
+
+- **Core should stay business-type agnostic:** The `core/` folder only contains layout and UI components that any business could use. No module-specific code has been added here.
+- **Shared UI belongs in reusable components:** We invested in the `core/components/ui/` folder first, so we don't duplicate styling logic later.
+- **Screen contracts must exist before implementation:** We wrote the Dashboard screen contract before attempting to build the dashboard UI.
+
+## The Dashboard Contract
+
+Before building the Dashboard, we created a screen contract in `docs/screens/dashboard.md`. 
+
+**This is a contract only. The final Dashboard UI is not yet implemented.**
+
+The contract defined:
+- **Widget Concept:** The dashboard will be a host for "widgets" (metrics, tables).
+- **Core Widgets:** Things like "Today's Sales" or "Recent Transactions."
+- **Module Extension:** How future vertical modules (like pharmacy) will inject their own widgets into the core dashboard without changing core code.
+- **Expected States:** How the dashboard handles loading (skeletons), empty data, errors, and permissions.
+
+This contract was created first to ensure we know exactly what data shape and behavior is needed before writing React code.
+
+## How We Built the Frontend So Far
+
+This is the actual sequence of how the frontend arrived at its current state:
+
+1. **Initial Frontend Foundation:** The base React + Vite setup, Tailwind CSS configuration, and shadcn/ui design system components were initially developed.
+2. **Repository Integration:** This frontend foundation work was then integrated into the actual Business OS repository structure (inside the `frontend/` folder) as part of a monorepo setup alongside the backend.
+3. **Application Shell Integration:** The application shell (`AppLayout.tsx`, `Sidebar.tsx`, `Header.tsx`) and the design system were connected and basic routing was added (`/app`) to prove the layout works.
+4. **Dashboard Contract:** The architectural rules and data expectations for the Dashboard were documented in a screen contract before building the actual screen.
+5. **Permissions Build Fix:** The frontend representation of the backend role contract (`permissions.ts`) was updated to a TypeScript type union. This was necessary to fix a build error caused by the `erasableSyntaxOnly` compiler rule which rejects runtime `enum` declarations. The backend permission definitions were not modified, ensuring the contract remains intact.
+6. **Core Dashboard Page Foundation (Step 1):** A structural page component was created for the Core Dashboard (`Dashboard.tsx`). The application shell's `/app` route was updated to mount this page instead of the original placeholder. The page contains only the layout heading and an empty container prepared for future dashboard widgets. No data, mocks, or API fetching were implemented at this stage. Both `npm run lint` and `npm run build` completed successfully.
+7. **Generic Widget Registry Foundation (Step 2):** A clean `DashboardWidget` type and a composition mechanism (`composeDashboardWidgets`) were created in `frontend/src/core/dashboard/registry.ts`. This allows core and module-specific widgets to be cleanly combined and sorted by priority without the core dashboard knowing which vertical module is active. The `Dashboard.tsx` page was updated to consume this registry abstraction. No actual business widgets, module-specific code, or backend changes were introduced.
+8. **Sales Today KPI Widget (Step 3):** The first core business widget ("Sales Today") was added. The component lives in `frontend/src/core/components/dashboard/SalesTodayWidget.tsx` and fetches data from a new mock service (`frontend/src/services/dashboard.ts`). A dedicated money-formatting utility was added (`frontend/src/lib/money.ts`) to enforce the project's standard of formatting backend integer paise into Indian Rupee strings. The widget is fully registered through the dashboard registry rather than being hardcoded into the layout. No backend code was modified.
+9. **Sales Today Data States (Step 4):** The Sales Today widget was upgraded to support explicit, production-quality data states. It now includes a dimension-stable loading skeleton, an accessible error state with a retry action, and a distinct "no-data" state (distinguishing between ₹0 in sales vs missing data). The existing widget registry integration and mock-to-service-to-UI data separation principles were preserved.
+10. **Total Customers KPI Widget (Step 5):** The second core business widget ("Total Customers") was added. The component lives in `frontend/src/core/components/dashboard/TotalCustomersWidget.tsx` and fetches data from an extended mock service (`frontend/src/services/dashboard.ts` and `frontend/src/mocks/dashboard.ts`). It follows the same stateful patterns established by Sales Today (loading, error, no-data, and valid zero count states). The widget is registered through the dashboard registry. The dashboard layout naturally handles the second card responsively. No shared generic KPI abstraction was introduced because the two widgets are simple enough that abstracting them now would be premature. No backend files changed.
+11. **Total Products KPI Widget (Step 6):** The third core business widget ("Products") was added. The component lives in `frontend/src/core/components/dashboard/TotalProductsWidget.tsx` and fetches data from the mock service. It follows the exact same stateful patterns as the previous widgets. The widget is registered through the dashboard registry using the `manage_products` permission. The dashboard now contains three core KPI widgets. Rather than prematurely abstracting these three similar widgets into a generic `KpiWidget` component (which would require complex generic data fetching props and reduce readability), the widgets currently remain separate and explicit, prioritizing readability. No backend files changed.
+12. **Low Stock KPI Widget (Step 7):** The fourth core business widget ("Low Stock") was added. The component lives in `frontend/src/core/components/dashboard/LowStockWidget.tsx` and fetches data from the mock service. It displays a count with a subtle supporting label. It is registered through the dashboard registry using the existing `adjust_stock` permission, which conceptually fits viewing low-stock information. The responsive grid gracefully wraps the four widgets as standard layout items. No premature abstraction was introduced. No backend files changed.
+13. **Total Suppliers KPI Widget (Step 8):** The fifth core business widget ("Total Suppliers") was added. The component lives in `frontend/src/core/components/dashboard/TotalSuppliersWidget.tsx` and fetches data from the mock service. It displays the count of active suppliers. It is registered through the dashboard registry using the `manage_suppliers` permission with a priority of 50. The responsive grid flawlessly incorporates this fifth KPI widget. No backend files changed.
+14. **Today's Transactions KPI Widget (Step 9):** The sixth core business widget ("Today's Transactions") was added. The component lives in `frontend/src/core/components/dashboard/TodaysTransactionsWidget.tsx` and fetches data from the mock service. It displays the count of transactions today. It is registered through the dashboard registry using the `create_sale` permission with a priority of 60. This permission correctly maps to any role authorized to operate the POS. The responsive grid successfully accommodates the sixth KPI widget. No backend files changed.
+15. **Outstanding Payments KPI Widget (Step 10):** The seventh core business widget ("Outstanding Payments") was added. The component lives in `frontend/src/core/components/dashboard/OutstandingPaymentsWidget.tsx` and fetches data from the mock service. The financial figure is natively handled in integer paise and formatted visually to Indian Rupees. It is registered through the dashboard registry using the existing `view_financials` permission with a priority of 70. The responsive layout seamlessly embraces the seventh KPI widget, wrapping rows appropriately. No backend files changed.
+16. **Recent Sales Widget (Step 11):** The first non-KPI dashboard widget ("Recent Sales") was added. The component lives in `frontend/src/core/components/dashboard/RecentSalesWidget.tsx` and fetches data from the mock service. It presents a compact table containing the reference, customer name, amount (in INR), and a status badge. It is registered through the dashboard registry using the `view_financials` permission with a priority of 80. To accommodate its tabular nature, the widget's internal wrapper gracefully applies a `md:col-span-2 lg:col-span-2` rule, allowing it to span wider inside the existing CSS grid without requiring any fragile refactoring of the global dashboard layout. No backend files changed.
+17. **Dashboard Permission Awareness (Step 12):** The dashboard's permission-aware widget visibility behavior was implemented. A minimal `usePermissions` hook was introduced at `frontend/src/hooks/use-permissions.ts` to act as a clean abstraction for the current user's permissions, preserving the ease of connecting a real authentication state later. The `Dashboard.tsx` page was updated to actively consume this hook and filter out any widgets from the registry if the active user lacks the required permission. This guarantees the dashboard only displays widgets the user is authorized to see, while adhering strictly to existing UI/UX and architectural guidelines. No backend files changed.
+18. **Core Dashboard Quick Actions (Step 14):** The implementation of the Quick Actions widget was evaluated against the dashboard contract. The contract requires Quick Actions to navigate to core routes like `/app/checkout` and `/app/inventory/new`. Since the core application does not currently have these underlying routes or screens built, implementing the Quick Actions panel now would require either inventing fake routes or building a useless placeholder component with an empty actions list. Following the architectural rule to avoid over-engineering placeholders, the Quick Actions widget implementation is deferred until its required core routes actually exist in the application.
+19. **Core Data Models and Zod Schemas (Step 15):** The core entity data models were implemented in `frontend/src/types/` using Zod schemas to act as the single source of truth for both runtime validation and TypeScript types. Schemas were created for `Business`, `User`, `Product`, `Customer`, `Supplier`, `Sale`, `Payment`, `StockMovement`, `Purchase`, and `AuditLog` precisely mirroring the requirements in `DATA_MODEL.md`. This foundational task resolves a major blocked prerequisite, enabling the future Checkout and Onboarding screens to rely on real type contracts instead of mock types. No backend files changed.
+20. **Core Dashboard Type Alignment (Step 16):** The duplicate definitions in `frontend/src/mocks/dashboard.ts` were removed. Dashboard metrics now accurately represent their contracts in `frontend/src/services/dashboard.ts`, and the UI components strictly rely on data shapes composed from the canonical Core Zod schemas (like `Sale`) rather than independent mock definitions, fixing the architecture data flow.
+21. **Core Business Onboarding Screen (Step 17):** The Business Onboarding UI was created at `frontend/src/core/pages/Onboarding.tsx` and routed to `/onboarding`. It utilizes `react-hook-form` and `zod` to validate the fields defined in the `businessSchema`. A mock service was created in `frontend/src/services/business.ts` to simulate the `PATCH /api/business/me` backend API without touching real backend code. The existing `/` to `/app` dashboard redirect remains perfectly intact.
+22. **Checkout Product Search (Step 19):** The product search functionality for the core Checkout screen was implemented in `frontend/src/core/pages/Checkout.tsx`. It relies strictly on the `Product` Zod schema and fetches data via a new mock service (`frontend/src/services/products.ts` and `frontend/src/mocks/products.ts`). It handles debounced searching, loading, error, empty, and matching states accurately, and formats prices using the core `formatPaiseToRupees` utility, seamlessly mirroring the architectural flow of UI → service → mock. Cart, customer selection, and payment flows remain deferred.
+
+
+
+
+
+
+
+## Current Frontend Status
+
+- [x] Base frontend project setup (Vite/React)
+- [x] Design system foundation (Tailwind)
+- [x] Reusable UI component foundation (shadcn/ui)
+- [x] Application shell structure
+- [x] Basic routing to shell
+- [x] Dashboard screen contract
+- [x] Dashboard final UI (Sales Today, Total Customers, Products, Low Stock, Total Suppliers, Today's Transactions, Outstanding Payments & Recent Sales widgets with full data states)
+- [x] Data models, types, and schemas implementation
+- [/] Service and mock data implementation (Dashboard and Onboarding foundation created)
+- [x] Core Business Onboarding Screen
+- [x] Checkout Product Search
+
+**Current frontend stage:** Core interactive screens are actively being developed. The Onboarding screen is completed. Checkout Product Search implemented. Ready to continue Checkout cart/payment flows.
+
+
+
+
+
+
+
+## Important Git Checkpoints
+
+- **`46b0dad`** `Initial project setup: folder structure and core dependencies` (The initial frontend foundation and design work happened here before being moved).
+- **`cdea2f2`** `Restructure into monorepo and scaffold Node backend` (The frontend work was integrated into the actual Business OS repository under the `frontend/` folder).
+- **`8e1146e`** `feat(frontend): integrate design system and application shell` (The point where the UI components and Layout were successfully connected in the application).
+- **`5f5a616`** `docs: define core dashboard screen contract` (The point where the plan for the first major screen was finalized).
+
+These checkpoints represent safe restore points before moving to the next meaningful stage of development.
+
+## Why We Built It This Way
+
+- **Why create a design system and UI components first?** To ensure all future screens look consistent and premium without developers having to rewrite Tailwind classes for every button or card.
+- **Why use a shell?** To provide a consistent navigation experience (sidebar/header) across all future business screens without duplicating layout code.
+- **Why create the screen contract before the dashboard UI?** To strictly follow the project rules. Writing a contract forces us to think about data shapes, loading states, and permissions *before* getting distracted by React implementation details.
+- **Why keep the frontend structure modular?** By isolating generic UI into `core/`, we ensure that future vertical-specific features (like pharmacy batches) won't accidentally break or pollute the core billing platform.
+
+## How This File Is Maintained
+
+This file is a living record of the frontend. 
+
+Whenever meaningful frontend work is **actually completed**, this file should be updated to:
+- Document what was built.
+- Explain how it was built.
+- Explain which technologies/components were used.
+- Explain why important decisions were made.
+- Update the current status and project history.
+- Update Git checkpoint information when relevant.
+
+Do NOT add planned work, and do NOT document something before it actually exists in the repository.
