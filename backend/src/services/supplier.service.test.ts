@@ -27,7 +27,10 @@ describe("supplier.service — createSupplier", () => {
 
   it("creates a supplier and writes an audit log", async () => {
     mockPrisma.supplier.findFirst.mockResolvedValue(null);
-    mockPrisma.supplier.create.mockResolvedValue({ id: "supp-1", name: "Pharma Dist" });
+    mockPrisma.supplier.create.mockResolvedValue({
+      id: "supp-1",
+      name: "Pharma Dist",
+    });
 
     const result = await createSupplier({
       businessId: "biz-1",
@@ -38,7 +41,7 @@ describe("supplier.service — createSupplier", () => {
     expect(result.id).toBe("supp-1");
     expect(auditService.writeAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({ action: "create", entityType: "supplier" }),
-      mockPrisma
+      mockPrisma,
     );
   });
 });
@@ -49,9 +52,16 @@ describe("supplier.service — updateSupplier", () => {
   });
 
   it("updates a supplier and writes an audit log", async () => {
-    mockPrisma.supplier.findFirst.mockResolvedValueOnce({ id: "supp-1", businessId: "biz-1", phone: "111" }); 
-    mockPrisma.supplier.findFirst.mockResolvedValueOnce(null); 
-    mockPrisma.supplier.update.mockResolvedValue({ id: "supp-1", name: "New Name" });
+    mockPrisma.supplier.findFirst.mockResolvedValueOnce({
+      id: "supp-1",
+      businessId: "biz-1",
+      phone: "111",
+    });
+    mockPrisma.supplier.findFirst.mockResolvedValueOnce(null);
+    mockPrisma.supplier.update.mockResolvedValue({
+      id: "supp-1",
+      name: "New Name",
+    });
 
     const result = await updateSupplier({
       supplierId: "supp-1",
@@ -64,7 +74,7 @@ describe("supplier.service — updateSupplier", () => {
     expect(result.name).toBe("New Name");
     expect(auditService.writeAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({ action: "update", entityType: "supplier" }),
-      mockPrisma
+      mockPrisma,
     );
   });
 });

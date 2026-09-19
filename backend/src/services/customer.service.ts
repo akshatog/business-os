@@ -14,9 +14,11 @@ export async function createCustomer(params: CreateCustomerParams) {
     const existingPhone = await prisma.customer.findFirst({
       where: { phone: params.phone, businessId: params.businessId },
     });
-    
+
     if (existingPhone) {
-      throw new Error("A customer with this phone number already exists in your business.");
+      throw new Error(
+        "A customer with this phone number already exists in your business.",
+      );
     }
   }
 
@@ -38,7 +40,7 @@ export async function createCustomer(params: CreateCustomerParams) {
         entityId: customer.id,
         newValue: customer,
       },
-      tx
+      tx,
     );
 
     return customer;
@@ -58,7 +60,7 @@ export async function updateCustomer(params: UpdateCustomerParams) {
   const existingCustomer = await prisma.customer.findFirst({
     where: { id: params.customerId, businessId: params.businessId },
   });
-  
+
   if (!existingCustomer) {
     throw new Error("Customer not found or access denied.");
   }
@@ -68,7 +70,9 @@ export async function updateCustomer(params: UpdateCustomerParams) {
       where: { phone: params.phone, businessId: params.businessId },
     });
     if (existingPhone) {
-      throw new Error("A customer with this phone number already exists in your business.");
+      throw new Error(
+        "A customer with this phone number already exists in your business.",
+      );
     }
   }
 
@@ -91,7 +95,7 @@ export async function updateCustomer(params: UpdateCustomerParams) {
         oldValue: existingCustomer,
         newValue: updatedCustomer,
       },
-      tx
+      tx,
     );
 
     return updatedCustomer;
