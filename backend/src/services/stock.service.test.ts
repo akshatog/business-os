@@ -15,7 +15,7 @@ import prisma from "../db/client.js";
 import { recordStockMovement, getCurrentStock } from "./stock.service.js";
 
 const mockPrisma = prisma as {
-  stockMovement: { 
+  stockMovement: {
     aggregate: ReturnType<typeof vi.fn>;
     create: ReturnType<typeof vi.fn>;
   };
@@ -33,7 +33,7 @@ describe("stock.service — getCurrentStock", () => {
     });
 
     const stock = await getCurrentStock("biz-1", "prod-1");
-    
+
     expect(stock).toBe(15);
     expect(mockPrisma.stockMovement.aggregate).toHaveBeenCalledWith({
       where: { businessId: "biz-1", productId: "prod-1" },
@@ -65,14 +65,19 @@ describe("stock.service — recordStockMovement", () => {
     };
 
     await expect(
-      recordStockMovement({
-        businessId: "biz-1",
-        productId: "prod-1",
-        userId: "user-1",
-        type: "sale",
-        quantity: -10, // Trying to deduct 10, but only 5 exist
-      }, fakeTx as any)
-    ).rejects.toThrow("Insufficient stock. Cannot deduct 10, current stock is 5.");
+      recordStockMovement(
+        {
+          businessId: "biz-1",
+          productId: "prod-1",
+          userId: "user-1",
+          type: "sale",
+          quantity: -10, // Trying to deduct 10, but only 5 exist
+        },
+        fakeTx as any,
+      ),
+    ).rejects.toThrow(
+      "Insufficient stock. Cannot deduct 10, current stock is 5.",
+    );
   });
 
   it("rejects adjustment or damage types without a required reason", async () => {
@@ -84,25 +89,31 @@ describe("stock.service — recordStockMovement", () => {
     };
 
     await expect(
-      recordStockMovement({
-        businessId: "biz-1",
-        productId: "prod-1",
-        userId: "user-1",
-        type: "damage",
-        quantity: -2,
-        reason: undefined, // Missing reason
-      }, fakeTx as any)
+      recordStockMovement(
+        {
+          businessId: "biz-1",
+          productId: "prod-1",
+          userId: "user-1",
+          type: "damage",
+          quantity: -2,
+          reason: undefined, // Missing reason
+        },
+        fakeTx as any,
+      ),
     ).rejects.toThrow("Reason is required for adjustment and damage movements");
-    
+
     await expect(
-      recordStockMovement({
-        businessId: "biz-1",
-        productId: "prod-1",
-        userId: "user-1",
-        type: "adjustment",
-        quantity: 5,
-        reason: "", // Empty reason
-      }, fakeTx as any)
+      recordStockMovement(
+        {
+          businessId: "biz-1",
+          productId: "prod-1",
+          userId: "user-1",
+          type: "adjustment",
+          quantity: 5,
+          reason: "", // Empty reason
+        },
+        fakeTx as any,
+      ),
     ).rejects.toThrow("Reason is required for adjustment and damage movements");
   });
 
@@ -115,15 +126,18 @@ describe("stock.service — recordStockMovement", () => {
       },
     };
 
-    await recordStockMovement({
-      businessId: "biz-1",
-      productId: "prod-1",
-      userId: "user-1",
-      type: "sale",
-      quantity: -5,
-      referenceType: "sale",
-      referenceId: "sale-1",
-    }, fakeTx as any);
+    await recordStockMovement(
+      {
+        businessId: "biz-1",
+        productId: "prod-1",
+        userId: "user-1",
+        type: "sale",
+        quantity: -5,
+        referenceType: "sale",
+        referenceId: "sale-1",
+      },
+      fakeTx as any,
+    );
 
     // 1. Check lock
     expect(fakeTx.$queryRaw).toHaveBeenCalled();
@@ -140,7 +154,7 @@ describe("stock.service — recordStockMovement", () => {
         referenceType: "sale",
         referenceId: "sale-1",
         reason: undefined,
-      }
+      },
     });
   });
 
@@ -153,15 +167,18 @@ describe("stock.service — recordStockMovement", () => {
       },
     };
 
-    await recordStockMovement({
-      businessId: "biz-1",
-      productId: "prod-1",
-      userId: "user-1",
-      type: "purchase",
-      quantity: 50,
-      referenceType: "purchase",
-      referenceId: "purch-1",
-    }, fakeTx as any);
+    await recordStockMovement(
+      {
+        businessId: "biz-1",
+        productId: "prod-1",
+        userId: "user-1",
+        type: "purchase",
+        quantity: 50,
+        referenceType: "purchase",
+        referenceId: "purch-1",
+      },
+      fakeTx as any,
+    );
 
     expect(fakeTx.stockMovement.create).toHaveBeenCalled();
   });

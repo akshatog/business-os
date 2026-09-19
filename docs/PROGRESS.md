@@ -21,5 +21,6 @@ Dated, short entries. Update every session.
 - **2026-09-19** (Phase 1.4): Implemented `writeAuditLog` service with transaction (`tx`) support. TDD complete and all tests passing.
 - **2026-09-19** (Phase 1.5): Implemented `StockMovement` service (`getCurrentStock` and `recordStockMovement`). Enforced `SELECT ... FOR UPDATE` locking and transaction scope. TDD complete (6 tests) covering edge cases like negative stock pushing and missing reasons. All tests passing.
 - **2026-09-19** (Phase 1.6): Implemented `Product` and `Category` CRUD services. Used strict Red-Green-Refactor loop. Handled cross-tenant relation forging (categoryId belonging to another business) and business-scoped SKU/Name uniqueness. 12 tests total, all passing.
+- **2026-09-19** (Phase 1.7 & 1.8): Implemented `Customer` and `Supplier` CRUD services. Enforced business-scoped phone uniqueness and transactional audit logs. Phase 1 backend foundation is now fully complete!
 - Updated `docs/DECISIONS.md` with the isActive DB-check vs. revocation-list decision and the signup/onboarding split decision.
 - Updated `docs/EXPLAINED.md` with plain-English explanation of Phase 1.3.

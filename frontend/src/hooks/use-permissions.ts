@@ -1,8 +1,13 @@
-import { type Permission, type Role, hasPermission as checkPermission, ROLE_PERMISSIONS } from "@/lib/permissions";
+import {
+  type Permission,
+  type Role,
+  hasPermission as checkPermission,
+  ROLE_PERMISSIONS,
+} from "@/lib/permissions";
 
-// MOCK: Temporary abstraction for dashboard testing. 
+// MOCK: Temporary abstraction for dashboard testing.
 // Replace with actual user context/store when authentication is implemented.
-const MOCK_ROLE: Role = "owner"; 
+const MOCK_ROLE: Role = "owner";
 
 export function usePermissions() {
   const hasPermission = (permission: Permission) => {

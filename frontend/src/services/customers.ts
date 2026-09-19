@@ -1,5 +1,5 @@
-import { mockCustomers } from '@/mocks/customers';
-import type { Customer } from '@/types/customer';
+import { mockCustomers } from "@/mocks/customers";
+import type { Customer } from "@/types/customer";
 
 /**
  * Searches customers by name, phone, or email.
@@ -10,8 +10,8 @@ export async function searchCustomers(query: string): Promise<Customer[]> {
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   // Simulate API failure randomly for error state testing
-  if (query.toLowerCase() === 'error') {
-    throw new Error('Simulated network error while searching customers');
+  if (query.toLowerCase() === "error") {
+    throw new Error("Simulated network error while searching customers");
   }
 
   const normalizedQuery = query.toLowerCase().trim();

@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { getLowStockCount } from "@/services/dashboard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 
@@ -11,7 +16,7 @@ export function LowStockWidget() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     getLowStockCount()
       .then((data) => {
         if (isMounted) {
@@ -48,9 +53,9 @@ export function LowStockWidget() {
   const renderContent = () => {
     if (loading) {
       return (
-        <div 
-          className="flex flex-col gap-1 mt-1" 
-          role="status" 
+        <div
+          className="flex flex-col gap-1 mt-1"
+          role="status"
           aria-label="Loading Low Stock"
         >
           <div className="h-8 w-1/3 bg-muted animate-pulse rounded" />
@@ -64,10 +69,12 @@ export function LowStockWidget() {
       return (
         <div className="flex flex-col justify-center mt-1 min-h-[44px]">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-destructive font-medium">Unable to load data</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <p className="text-sm text-destructive font-medium">
+              Unable to load data
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleRetry}
               className="h-7 text-xs px-2"
             >
@@ -89,7 +96,7 @@ export function LowStockWidget() {
     return (
       <div className="mt-1">
         <div className="text-2xl font-bold">
-          {lowStockCount.toLocaleString('en-IN')}
+          {lowStockCount.toLocaleString("en-IN")}
         </div>
         <p className="text-xs text-muted-foreground mt-0.5">
           products need attention
@@ -108,9 +115,7 @@ export function LowStockWidget() {
           <AlertTriangle className="h-4 w-4 text-destructive" />
         </div>
       </CardHeader>
-      <CardContent>
-        {renderContent()}
-      </CardContent>
+      <CardContent>{renderContent()}</CardContent>
     </Card>
   );
 }

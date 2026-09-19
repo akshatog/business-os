@@ -1,4 +1,7 @@
-import { composeDashboardWidgets, type DashboardWidget } from "@/core/dashboard/registry";
+import {
+  composeDashboardWidgets,
+  type DashboardWidget,
+} from "@/core/dashboard/registry";
 import { CORE_WIDGETS } from "@/core/dashboard/core-widgets";
 import { usePermissions } from "@/hooks/use-permissions";
 
@@ -9,14 +12,20 @@ const MODULE_WIDGETS: DashboardWidget[] = [];
 export function Dashboard() {
   const { hasPermission } = usePermissions();
 
-  const activeWidgets = composeDashboardWidgets(CORE_WIDGETS, MODULE_WIDGETS).filter(
-    (widget) => !widget.requiredPermission || hasPermission(widget.requiredPermission)
+  const activeWidgets = composeDashboardWidgets(
+    CORE_WIDGETS,
+    MODULE_WIDGETS,
+  ).filter(
+    (widget) =>
+      !widget.requiredPermission || hasPermission(widget.requiredPermission),
   );
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          Dashboard
+        </h1>
         <p className="text-muted-foreground mt-2">
           Overview of your business performance and activities.
         </p>

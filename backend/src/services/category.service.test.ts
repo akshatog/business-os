@@ -16,7 +16,11 @@ vi.mock("../db/client.js", () => ({
 }));
 
 import prisma from "../db/client.js";
-import { createCategory, updateCategory, deleteCategory } from "./category.service.js";
+import {
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "./category.service.js";
 import * as auditService from "./audit.service.js";
 
 const mockPrisma = prisma as any;
@@ -31,7 +35,10 @@ describe("category.service — createCategory", () => {
 
   it("creates a category and writes an audit log", async () => {
     mockPrisma.productCategory.findFirst.mockResolvedValue(null);
-    mockPrisma.productCategory.create.mockResolvedValue({ id: "cat-1", name: "Tablets" });
+    mockPrisma.productCategory.create.mockResolvedValue({
+      id: "cat-1",
+      name: "Tablets",
+    });
 
     const result = await createCategory({
       businessId: "biz-1",
@@ -42,20 +49,25 @@ describe("category.service — createCategory", () => {
     expect(result.id).toBe("cat-1");
     expect(auditService.writeAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({ action: "create", entityType: "category" }),
-      mockPrisma
+      mockPrisma,
     );
   });
 
   it("rejects creation if category name already exists in same business", async () => {
-    mockPrisma.productCategory.findFirst.mockResolvedValue({ id: "cat-2", name: "Tablets" });
+    mockPrisma.productCategory.findFirst.mockResolvedValue({
+      id: "cat-2",
+      name: "Tablets",
+    });
 
     await expect(
       createCategory({
         businessId: "biz-1",
         userId: "user-1",
         name: "Tablets",
-      })
-    ).rejects.toThrow("A category with this name already exists in your business.");
+      }),
+    ).rejects.toThrow(
+      "A category with this name already exists in your business.",
+    );
   });
 });
 
@@ -65,9 +77,16 @@ describe("category.service — updateCategory", () => {
   });
 
   it("updates a category and writes an audit log", async () => {
-    mockPrisma.productCategory.findFirst.mockResolvedValueOnce({ id: "cat-1", businessId: "biz-1", name: "Old" }); // 1. existing check
+    mockPrisma.productCategory.findFirst.mockResolvedValueOnce({
+      id: "cat-1",
+      businessId: "biz-1",
+      name: "Old",
+    }); // 1. existing check
     mockPrisma.productCategory.findFirst.mockResolvedValueOnce(null); // 2. duplicate name check
-    mockPrisma.productCategory.update.mockResolvedValue({ id: "cat-1", name: "New" });
+    mockPrisma.productCategory.update.mockResolvedValue({
+      id: "cat-1",
+      name: "New",
+    });
 
     const result = await updateCategory({
       categoryId: "cat-1",
@@ -79,7 +98,7 @@ describe("category.service — updateCategory", () => {
     expect(result.name).toBe("New");
     expect(auditService.writeAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({ action: "update", entityType: "category" }),
-      mockPrisma
+      mockPrisma,
     );
   });
 
@@ -92,7 +111,7 @@ describe("category.service — updateCategory", () => {
         businessId: "biz-1",
         userId: "user-1",
         name: "Hacked",
-      })
+      }),
     ).rejects.toThrow("Category not found or access denied.");
   });
 });
@@ -103,7 +122,10 @@ describe("category.service — deleteCategory", () => {
   });
 
   it("deletes a category and writes an audit log", async () => {
-    mockPrisma.productCategory.findFirst.mockResolvedValue({ id: "cat-1", businessId: "biz-1" });
+    mockPrisma.productCategory.findFirst.mockResolvedValue({
+      id: "cat-1",
+      businessId: "biz-1",
+    });
     mockPrisma.product.findFirst.mockResolvedValue(null); // No associated products
     mockPrisma.productCategory.delete.mockResolvedValue({ id: "cat-1" });
 
@@ -116,12 +138,15 @@ describe("category.service — deleteCategory", () => {
     expect(mockPrisma.productCategory.delete).toHaveBeenCalled();
     expect(auditService.writeAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({ action: "delete", entityType: "category" }),
-      mockPrisma
+      mockPrisma,
     );
   });
 
   it("rejects deletion if category is assigned to products", async () => {
-    mockPrisma.productCategory.findFirst.mockResolvedValue({ id: "cat-1", businessId: "biz-1" });
+    mockPrisma.productCategory.findFirst.mockResolvedValue({
+      id: "cat-1",
+      businessId: "biz-1",
+    });
     mockPrisma.product.findFirst.mockResolvedValue({ id: "prod-1" }); // Associated product found!
 
     await expect(
@@ -129,7 +154,9 @@ describe("category.service — deleteCategory", () => {
         categoryId: "cat-1",
         businessId: "biz-1",
         userId: "user-1",
-      })
-    ).rejects.toThrow("Cannot delete category because it is currently assigned to one or more products.");
+      }),
+    ).rejects.toThrow(
+      "Cannot delete category because it is currently assigned to one or more products.",
+    );
   });
 });

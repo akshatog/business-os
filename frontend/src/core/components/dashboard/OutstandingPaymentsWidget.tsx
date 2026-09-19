@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { getOutstandingPayments } from "@/services/dashboard";
 import { formatPaiseToRupees } from "@/lib/money";
-import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
 import { Clock } from "lucide-react";
 
@@ -12,7 +17,7 @@ export function OutstandingPaymentsWidget() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     getOutstandingPayments()
       .then((data) => {
         if (isMounted) {
@@ -49,9 +54,9 @@ export function OutstandingPaymentsWidget() {
   const renderContent = () => {
     if (loading) {
       return (
-        <div 
-          className="flex flex-col gap-1 mt-1" 
-          role="status" 
+        <div
+          className="flex flex-col gap-1 mt-1"
+          role="status"
           aria-label="Loading Outstanding Payments"
         >
           <div className="h-8 w-1/3 bg-muted animate-pulse rounded" />
@@ -65,10 +70,12 @@ export function OutstandingPaymentsWidget() {
       return (
         <div className="flex flex-col justify-center mt-1 min-h-[44px]">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-destructive font-medium">Unable to load data</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <p className="text-sm text-destructive font-medium">
+              Unable to load data
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleRetry}
               className="h-7 text-xs px-2"
             >
@@ -109,9 +116,7 @@ export function OutstandingPaymentsWidget() {
           <Clock className="h-4 w-4 text-amber-500" />
         </div>
       </CardHeader>
-      <CardContent>
-        {renderContent()}
-      </CardContent>
+      <CardContent>{renderContent()}</CardContent>
     </Card>
   );
 }

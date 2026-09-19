@@ -8,7 +8,7 @@ vi.mock("../db/client.js", () => ({
     },
     user: {
       findUnique: vi.fn(),
-    }
+    },
   },
 }));
 
@@ -78,30 +78,33 @@ describe("audit.service — writeAuditLog", () => {
         action: "delete",
         entityType: "product",
         entityId: "prod-2",
-      })
+      }),
     ).rejects.toThrow("User not found to associate with audit log");
   });
-  
+
   it("can accept an open transaction client (tx) instead of using the global prisma", async () => {
     // Arrange
     mockPrisma.user.findUnique.mockResolvedValue({ businessId: "biz-1" });
-    
+
     const fakeTx = {
       user: {
-        findUnique: vi.fn().mockResolvedValue({ businessId: "biz-1" })
+        findUnique: vi.fn().mockResolvedValue({ businessId: "biz-1" }),
       },
       auditLog: {
-        create: vi.fn().mockResolvedValue({ id: "audit-2" })
-      }
+        create: vi.fn().mockResolvedValue({ id: "audit-2" }),
+      },
     };
 
     // Act
-    await writeAuditLog({
-      userId: "user-1",
-      action: "update",
-      entityType: "sale",
-      entityId: "sale-1",
-    }, fakeTx as any);
+    await writeAuditLog(
+      {
+        userId: "user-1",
+        action: "update",
+        entityType: "sale",
+        entityId: "sale-1",
+      },
+      fakeTx as any,
+    );
 
     // Assert
     expect(fakeTx.user.findUnique).toHaveBeenCalled();

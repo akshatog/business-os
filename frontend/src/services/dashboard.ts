@@ -7,7 +7,7 @@ import {
   fetchMockTotalSuppliers,
   fetchMockTodaysTransactions,
   fetchMockOutstandingPayments,
-  fetchMockRecentSales
+  fetchMockRecentSales,
 } from "@/mocks/dashboard";
 
 export interface SalesTodayResponse {
@@ -38,7 +38,10 @@ export interface OutstandingPaymentsResponse {
   outstandingPaise: number | null;
 }
 
-export type DashboardRecentSale = Pick<Sale, "id" | "invoiceNumber" | "totalAmountMinor" | "status" | "createdAt"> & {
+export type DashboardRecentSale = Pick<
+  Sale,
+  "id" | "invoiceNumber" | "totalAmountMinor" | "status" | "createdAt"
+> & {
   customerName: string;
 };
 

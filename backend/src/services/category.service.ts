@@ -12,9 +12,11 @@ export async function createCategory(params: CreateCategoryParams) {
   const existingName = await prisma.productCategory.findFirst({
     where: { name: params.name, businessId: params.businessId },
   });
-  
+
   if (existingName) {
-    throw new Error("A category with this name already exists in your business.");
+    throw new Error(
+      "A category with this name already exists in your business.",
+    );
   }
 
   // 2. Create and audit
@@ -34,7 +36,7 @@ export async function createCategory(params: CreateCategoryParams) {
         entityId: category.id,
         newValue: category,
       },
-      tx
+      tx,
     );
 
     return category;
@@ -53,7 +55,7 @@ export async function updateCategory(params: UpdateCategoryParams) {
   const existingCategory = await prisma.productCategory.findFirst({
     where: { id: params.categoryId, businessId: params.businessId },
   });
-  
+
   if (!existingCategory) {
     throw new Error("Category not found or access denied.");
   }
@@ -64,7 +66,9 @@ export async function updateCategory(params: UpdateCategoryParams) {
       where: { name: params.name, businessId: params.businessId },
     });
     if (existingName) {
-      throw new Error("A category with this name already exists in your business.");
+      throw new Error(
+        "A category with this name already exists in your business.",
+      );
     }
   }
 
@@ -86,7 +90,7 @@ export async function updateCategory(params: UpdateCategoryParams) {
         oldValue: existingCategory,
         newValue: updatedCategory,
       },
-      tx
+      tx,
     );
 
     return updatedCategory;
@@ -104,7 +108,7 @@ export async function deleteCategory(params: DeleteCategoryParams) {
   const existingCategory = await prisma.productCategory.findFirst({
     where: { id: params.categoryId, businessId: params.businessId },
   });
-  
+
   if (!existingCategory) {
     throw new Error("Category not found or access denied.");
   }
@@ -115,7 +119,9 @@ export async function deleteCategory(params: DeleteCategoryParams) {
   });
 
   if (associatedProduct) {
-    throw new Error("Cannot delete category because it is currently assigned to one or more products.");
+    throw new Error(
+      "Cannot delete category because it is currently assigned to one or more products.",
+    );
   }
 
   // 3. Delete and audit
@@ -132,7 +138,7 @@ export async function deleteCategory(params: DeleteCategoryParams) {
         entityId: deletedCategory.id,
         oldValue: existingCategory,
       },
-      tx
+      tx,
     );
 
     return deletedCategory;

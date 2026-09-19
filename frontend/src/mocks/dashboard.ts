@@ -6,7 +6,7 @@ import type {
   TotalSuppliersResponse,
   TodaysTransactionsResponse,
   OutstandingPaymentsResponse,
-  RecentSalesResponse
+  RecentSalesResponse,
 } from "@/services/dashboard";
 
 export const MOCK_SALES_TODAY: SalesTodayResponse = {

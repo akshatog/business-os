@@ -22,7 +22,9 @@ export async function createProduct(params: CreateProductParams) {
       },
     });
     if (!category) {
-      throw new Error("Invalid category: Does not exist or belongs to another business.");
+      throw new Error(
+        "Invalid category: Does not exist or belongs to another business.",
+      );
     }
   }
 
@@ -35,7 +37,9 @@ export async function createProduct(params: CreateProductParams) {
       },
     });
     if (existingSku) {
-      throw new Error("A product with this SKU already exists in your business.");
+      throw new Error(
+        "A product with this SKU already exists in your business.",
+      );
     }
   }
 
@@ -61,7 +65,7 @@ export async function createProduct(params: CreateProductParams) {
         entityId: product.id,
         newValue: product,
       },
-      tx
+      tx,
     );
 
     return product;
@@ -86,7 +90,7 @@ export async function updateProduct(params: UpdateProductParams) {
   const existingProduct = await prisma.product.findFirst({
     where: { id: params.productId, businessId: params.businessId },
   });
-  
+
   if (!existingProduct) {
     throw new Error("Product not found or access denied.");
   }
@@ -97,7 +101,9 @@ export async function updateProduct(params: UpdateProductParams) {
       where: { id: params.categoryId, businessId: params.businessId },
     });
     if (!category) {
-      throw new Error("Invalid category: Does not exist or belongs to another business.");
+      throw new Error(
+        "Invalid category: Does not exist or belongs to another business.",
+      );
     }
   }
 
@@ -107,7 +113,9 @@ export async function updateProduct(params: UpdateProductParams) {
       where: { sku: params.sku, businessId: params.businessId },
     });
     if (existingSku) {
-      throw new Error("A product with this SKU already exists in your business.");
+      throw new Error(
+        "A product with this SKU already exists in your business.",
+      );
     }
   }
 
@@ -135,10 +143,9 @@ export async function updateProduct(params: UpdateProductParams) {
         oldValue: existingProduct,
         newValue: updatedProduct,
       },
-      tx
+      tx,
     );
 
     return updatedProduct;
   });
 }
-

@@ -1,6 +1,7 @@
 import prisma from "../db/client.js";
 
-type StockMovementType = "purchase" | "sale" | "return" | "damage" | "adjustment" | "transfer";
+type StockMovementType =
+  "purchase" | "sale" | "return" | "damage" | "adjustment" | "transfer";
 type StockMovementReferenceType = "sale" | "purchase" | "manual";
 
 type RecordStockMovementParams = {
@@ -17,9 +18,13 @@ type RecordStockMovementParams = {
 /**
  * Calculates current stock by summing all historical movements.
  */
-export async function getCurrentStock(businessId: string, productId: string, tx?: any): Promise<number> {
+export async function getCurrentStock(
+  businessId: string,
+  productId: string,
+  tx?: any,
+): Promise<number> {
   const db = tx || prisma;
-  
+
   const result = await db.stockMovement.aggregate({
     where: { businessId, productId },
     _sum: { quantity: true },
@@ -29,20 +34,25 @@ export async function getCurrentStock(businessId: string, productId: string, tx?
 }
 
 /**
- * Records a new stock movement. 
- * MUST be passed a transactional client (tx) when called as part of a larger operation (like a sale) 
+ * Records a new stock movement.
+ * MUST be passed a transactional client (tx) when called as part of a larger operation (like a sale)
  * to ensure atomicity. Will throw an error if attempting to deduct more stock than available.
  */
 export async function recordStockMovement(
   params: RecordStockMovementParams,
-  tx: any
+  tx: any,
 ) {
   if (!tx) {
-    throw new Error("A transaction client (tx) must be provided to recordStockMovement to ensure atomicity");
+    throw new Error(
+      "A transaction client (tx) must be provided to recordStockMovement to ensure atomicity",
+    );
   }
 
   // Edge case: Reason is required for adjustment and damage types
-  if ((params.type === "adjustment" || params.type === "damage") && !params.reason?.trim()) {
+  if (
+    (params.type === "adjustment" || params.type === "damage") &&
+    !params.reason?.trim()
+  ) {
     throw new Error("Reason is required for adjustment and damage movements");
   }
 
@@ -51,11 +61,17 @@ export async function recordStockMovement(
   await tx.$queryRaw`SELECT id FROM "Product" WHERE id = ${params.productId}::uuid FOR UPDATE`;
 
   // 2. SUM current stock
-  const currentStock = await getCurrentStock(params.businessId, params.productId, tx);
+  const currentStock = await getCurrentStock(
+    params.businessId,
+    params.productId,
+    tx,
+  );
 
   // 3. VALIDATE negative stock pushes
   if (params.quantity < 0 && currentStock + params.quantity < 0) {
-    throw new Error(`Insufficient stock. Cannot deduct ${Math.abs(params.quantity)}, current stock is ${currentStock}.`);
+    throw new Error(
+      `Insufficient stock. Cannot deduct ${Math.abs(params.quantity)}, current stock is ${currentStock}.`,
+    );
   }
 
   // 4. INSERT new movement

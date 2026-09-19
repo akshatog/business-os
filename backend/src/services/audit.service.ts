@@ -11,13 +11,10 @@ type AuditLogParams = {
 };
 
 /**
- * Writes an audit log. 
+ * Writes an audit log.
  * Can accept an optional Prisma transactional client (`tx`) to participate in a larger transaction.
  */
-export async function writeAuditLog(
-  params: AuditLogParams,
-  tx?: any
-) {
+export async function writeAuditLog(params: AuditLogParams, tx?: any) {
   const db = tx || prisma;
 
   const user = await db.user.findUnique({

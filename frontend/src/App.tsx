@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { AppLayout } from '@/core/components/layout/AppLayout'
-import { Dashboard } from '@/core/pages/Dashboard'
-import { Onboarding } from '@/core/pages/Onboarding'
-import { Checkout } from '@/core/pages/Checkout'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AppLayout } from "@/core/components/layout/AppLayout";
+import { Dashboard } from "@/core/pages/Dashboard";
+import { Onboarding } from "@/core/pages/Onboarding";
+import { Checkout } from "@/core/pages/Checkout";
+import "./App.css";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

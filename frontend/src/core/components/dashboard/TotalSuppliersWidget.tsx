@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { getTotalSuppliers } from "@/services/dashboard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
 import { Truck } from "lucide-react";
 
@@ -11,7 +16,7 @@ export function TotalSuppliersWidget() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     getTotalSuppliers()
       .then((data) => {
         if (isMounted) {
@@ -48,9 +53,9 @@ export function TotalSuppliersWidget() {
   const renderContent = () => {
     if (loading) {
       return (
-        <div 
-          className="flex flex-col gap-1 mt-1" 
-          role="status" 
+        <div
+          className="flex flex-col gap-1 mt-1"
+          role="status"
           aria-label="Loading Total Suppliers"
         >
           <div className="h-8 w-1/3 bg-muted animate-pulse rounded" />
@@ -64,10 +69,12 @@ export function TotalSuppliersWidget() {
       return (
         <div className="flex flex-col justify-center mt-1 min-h-[44px]">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-destructive font-medium">Unable to load data</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <p className="text-sm text-destructive font-medium">
+              Unable to load data
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleRetry}
               className="h-7 text-xs px-2"
             >
@@ -89,11 +96,9 @@ export function TotalSuppliersWidget() {
     return (
       <div className="mt-1">
         <div className="text-2xl font-bold">
-          {totalSuppliers.toLocaleString('en-IN')}
+          {totalSuppliers.toLocaleString("en-IN")}
         </div>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          active suppliers
-        </p>
+        <p className="text-xs text-muted-foreground mt-0.5">active suppliers</p>
       </div>
     );
   };
@@ -108,9 +113,7 @@ export function TotalSuppliersWidget() {
           <Truck className="h-4 w-4 text-emerald-500" />
         </div>
       </CardHeader>
-      <CardContent>
-        {renderContent()}
-      </CardContent>
+      <CardContent>{renderContent()}</CardContent>
     </Card>
   );
 }

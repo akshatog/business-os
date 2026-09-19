@@ -1,8 +1,13 @@
-import { useState } from 'react';
-import { Menu, Search, Bell } from 'lucide-react';
-import { Button } from '@/core/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/core/components/ui/sheet';
-import { Sidebar } from './Sidebar';
+import { useState } from "react";
+import { Menu, Search, Bell } from "lucide-react";
+import { Button } from "@/core/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/core/components/ui/sheet";
+import { Sidebar } from "./Sidebar";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,13 +26,13 @@ export function Header() {
           <Sidebar onNavigate={() => setIsMobileMenuOpen(false)} />
         </SheetContent>
       </Sheet>
-      
+
       <div className="flex flex-1 items-center gap-4 md:gap-8">
         <div className="flex-1 md:flex-initial">
           <h1 className="font-semibold text-lg hidden md:block">Business OS</h1>
         </div>
       </div>
-      
+
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" className="text-muted-foreground">
           <Search className="h-5 w-5" />

@@ -5,11 +5,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { updateBusiness } from "@/services/business";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/core/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
 import { Input } from "@/core/components/ui/input";
 import { Label } from "@/core/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/core/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/core/components/ui/select";
 
 const onboardingSchema = z.object({
   businessType: z.enum(["pharmacy", "clothing", "grocery"], {
@@ -18,7 +31,11 @@ const onboardingSchema = z.object({
   address: z.string().min(1, "Address is required."),
   gstNumber: z.string().optional(),
   phone: z.string().min(10, "Valid phone number is required."),
-  email: z.string().email("Invalid email address.").optional().or(z.literal("")),
+  email: z
+    .string()
+    .email("Invalid email address.")
+    .optional()
+    .or(z.literal("")),
 });
 
 type OnboardingFormValues = z.infer<typeof onboardingSchema>;
@@ -27,14 +44,19 @@ export function Onboarding() {
   const navigate = useNavigate();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<OnboardingFormValues>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
       address: "",
       gstNumber: "",
       phone: "",
       email: "",
-    }
+    },
   });
 
   const onSubmit = async (data: OnboardingFormValues) => {
@@ -69,76 +91,104 @@ export function Onboarding() {
                 {submitError}
               </div>
             )}
-            
+
             <div className="space-y-2">
-              <Label htmlFor="businessType">Business Type <span className="text-destructive">*</span></Label>
-              <Select onValueChange={(value) => setValue("businessType", value as any, { shouldValidate: true })}>
-                <SelectTrigger id="businessType" className={errors.businessType ? "border-destructive" : ""}>
+              <Label htmlFor="businessType">
+                Business Type <span className="text-destructive">*</span>
+              </Label>
+              <Select
+                onValueChange={(value) =>
+                  setValue("businessType", value as any, {
+                    shouldValidate: true,
+                  })
+                }
+              >
+                <SelectTrigger
+                  id="businessType"
+                  className={errors.businessType ? "border-destructive" : ""}
+                >
                   <SelectValue placeholder="Select business type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="pharmacy">Pharmacy</SelectItem>
-                  <SelectItem value="clothing" disabled>Clothing (Coming Soon)</SelectItem>
-                  <SelectItem value="grocery" disabled>Grocery (Coming Soon)</SelectItem>
+                  <SelectItem value="clothing" disabled>
+                    Clothing (Coming Soon)
+                  </SelectItem>
+                  <SelectItem value="grocery" disabled>
+                    Grocery (Coming Soon)
+                  </SelectItem>
                 </SelectContent>
               </Select>
               {errors.businessType && (
-                <p className="text-sm text-destructive">{errors.businessType.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.businessType.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Address <span className="text-destructive">*</span></Label>
-              <Input 
-                id="address" 
-                placeholder="Business Address" 
-                {...register("address")} 
+              <Label htmlFor="address">
+                Address <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="address"
+                placeholder="Business Address"
+                {...register("address")}
                 className={errors.address ? "border-destructive" : ""}
               />
               {errors.address && (
-                <p className="text-sm text-destructive">{errors.address.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.address.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="gstNumber">GST Number</Label>
-              <Input 
-                id="gstNumber" 
-                placeholder="Optional" 
-                {...register("gstNumber")} 
+              <Input
+                id="gstNumber"
+                placeholder="Optional"
+                {...register("gstNumber")}
               />
               {errors.gstNumber && (
-                <p className="text-sm text-destructive">{errors.gstNumber.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.gstNumber.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number <span className="text-destructive">*</span></Label>
-              <Input 
-                id="phone" 
-                placeholder="10-digit number" 
-                {...register("phone")} 
+              <Label htmlFor="phone">
+                Phone Number <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="phone"
+                placeholder="10-digit number"
+                {...register("phone")}
                 className={errors.phone ? "border-destructive" : ""}
               />
               {errors.phone && (
-                <p className="text-sm text-destructive">{errors.phone.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.phone.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
-              <Input 
-                id="email" 
+              <Input
+                id="email"
                 type="email"
-                placeholder="Optional" 
-                {...register("email")} 
+                placeholder="Optional"
+                {...register("email")}
                 className={errors.email ? "border-destructive" : ""}
               />
               {errors.email && (
-                <p className="text-sm text-destructive">{errors.email.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.email.message}
+                </p>
               )}
             </div>
-
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
