@@ -23,6 +23,7 @@ This app handles real money and stock. This list drives TDD for anything in `bac
 ## Stock movements
 - An adjustment that would push stock negative
 - Two devices adjusting the same product's stock at the same time
+- Deadlock prevention: concurrent sales containing multiple overlapping products must not deadlock (handled via deterministic lock ordering)
 - A `StockMovement` created without a required `reason` on `adjustment` or `damage` types
 - Reconstructing current stock from a large movement history — verify it matches expected totals (a periodic consistency check, not just trust the sum)
 
@@ -52,3 +53,9 @@ This app handles real money and stock. This list drives TDD for anything in `bac
 
 ## Money handling
 - Any calculation that could produce a fractional paise value — define and test the rounding rule explicitly, don't leave it to whatever the language does by default
+
+## Core Entities (Products, Customers, Suppliers)
+- **Cross-tenant relations**: Attempting to create a Product using a `categoryId` or `supplierId` that belongs to a different `businessId` (must be rejected)
+- **Uniqueness**: Creating a product with an SKU or Barcode that already exists for the *same* business (must reject), vs. one that exists for a *different* business (must allow)
+- **Data integrity**: Deactivating (`isActive: false`) a product that currently has positive stock (allowable, but ensure AuditLog tracks this)
+- **Whitespace**: Creating an entity with empty or whitespace-only required fields (must reject)
