@@ -14,8 +14,8 @@
     --shadow:
       rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-    --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-    --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+    --heading: system-ui, "Segoe UI", Roboto, sans-serif;
     --mono: ui-monospace, Consolas, monospace;
 
     /* Shadcn defaults */
@@ -48,7 +48,7 @@
     --ring: 221.2 83.2% 53.3%;
 
     --radius: 0.5rem;
-    
+
     /* Additional custom variables */
     --sidebar-bg: 204 61% 14%;
     --sidebar-fg: 210 40% 98%;

@@ -1,4 +1,4 @@
-import type { Customer } from '@/types/customer';
+import type { Customer } from "@/types/customer";
 
 export const mockCustomers: Customer[] = [
   {
@@ -36,5 +36,5 @@ export const mockCustomers: Customer[] = [
     email: "sneha.reddy@example.com",
     address: "88 Jubilee Hills, Hyderabad",
     createdAt: new Date().toISOString(),
-  }
+  },
 ];

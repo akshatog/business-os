@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { getRecentSales, type DashboardRecentSale } from "@/services/dashboard";
 import { formatPaiseToRupees } from "@/lib/money";
-import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
 import { Badge } from "@/core/components/ui/badge";
 import {
@@ -14,13 +19,15 @@ import {
 } from "@/core/components/ui/table";
 
 export function RecentSalesWidget() {
-  const [recentSales, setRecentSales] = useState<DashboardRecentSale[] | null>(null);
+  const [recentSales, setRecentSales] = useState<DashboardRecentSale[] | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     let isMounted = true;
-    
+
     getRecentSales()
       .then((data) => {
         if (isMounted) {
@@ -57,7 +64,11 @@ export function RecentSalesWidget() {
   const getStatusBadge = (status: DashboardRecentSale["status"]) => {
     switch (status) {
       case "completed":
-        return <Badge variant="default" className="bg-green-600 hover:bg-green-700">Completed</Badge>;
+        return (
+          <Badge variant="default" className="bg-green-600 hover:bg-green-700">
+            Completed
+          </Badge>
+        );
       case "voided":
         return <Badge variant="secondary">Voided</Badge>;
       case "refunded":
@@ -71,9 +82,9 @@ export function RecentSalesWidget() {
   const renderContent = () => {
     if (loading) {
       return (
-        <div 
-          className="flex flex-col gap-3 mt-1" 
-          role="status" 
+        <div
+          className="flex flex-col gap-3 mt-1"
+          role="status"
           aria-label="Loading Recent Sales"
         >
           {[1, 2, 3, 4].map((i) => (
@@ -95,12 +106,10 @@ export function RecentSalesWidget() {
       return (
         <div className="flex flex-col justify-center mt-1 min-h-[200px]">
           <div className="flex flex-col items-center justify-center space-y-3">
-            <p className="text-sm text-destructive font-medium">Unable to load recent sales</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleRetry}
-            >
+            <p className="text-sm text-destructive font-medium">
+              Unable to load recent sales
+            </p>
+            <Button variant="outline" size="sm" onClick={handleRetry}>
               Retry
             </Button>
           </div>
@@ -111,7 +120,9 @@ export function RecentSalesWidget() {
     if (!recentSales || recentSales.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center mt-1 min-h-[200px] text-center space-y-2">
-          <p className="text-sm text-muted-foreground">No recent sales found.</p>
+          <p className="text-sm text-muted-foreground">
+            No recent sales found.
+          </p>
         </div>
       );
     }
@@ -129,7 +140,9 @@ export function RecentSalesWidget() {
         <TableBody>
           {recentSales.map((sale) => (
             <TableRow key={sale.id}>
-              <TableCell className="font-medium text-xs">{sale.invoiceNumber}</TableCell>
+              <TableCell className="font-medium text-xs">
+                {sale.invoiceNumber}
+              </TableCell>
               <TableCell className="text-xs">{sale.customerName}</TableCell>
               <TableCell className="text-right text-xs">
                 {formatPaiseToRupees(sale.totalAmountMinor)}
@@ -156,9 +169,7 @@ export function RecentSalesWidget() {
           </p>
         </div>
       </CardHeader>
-      <CardContent>
-        {renderContent()}
-      </CardContent>
+      <CardContent>{renderContent()}</CardContent>
     </Card>
   );
 }

@@ -1,6 +1,6 @@
-import { Outlet } from 'react-router-dom';
-import { Sidebar } from './Sidebar';
-import { Header } from './Header';
+import { Outlet } from "react-router-dom";
+import { Sidebar } from "./Sidebar";
+import { Header } from "./Header";
 
 export function AppLayout() {
   return (
@@ -9,7 +9,7 @@ export function AppLayout() {
       <div className="hidden md:flex flex-col w-64 fixed inset-y-0 z-50">
         <Sidebar />
       </div>
-      
+
       {/* Main Content Wrapper */}
       <div className="flex flex-col flex-1 w-full md:pl-64">
         <Header />

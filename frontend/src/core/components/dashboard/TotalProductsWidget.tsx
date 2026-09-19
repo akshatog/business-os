@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { getTotalProducts } from "@/services/dashboard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
 import { Package } from "lucide-react";
 
@@ -11,7 +16,7 @@ export function TotalProductsWidget() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     getTotalProducts()
       .then((data) => {
         if (isMounted) {
@@ -48,9 +53,9 @@ export function TotalProductsWidget() {
   const renderContent = () => {
     if (loading) {
       return (
-        <div 
-          className="h-8 w-1/3 bg-muted animate-pulse rounded mt-1" 
-          role="status" 
+        <div
+          className="h-8 w-1/3 bg-muted animate-pulse rounded mt-1"
+          role="status"
           aria-label="Loading Products"
         >
           <span className="sr-only">Loading</span>
@@ -61,10 +66,12 @@ export function TotalProductsWidget() {
     if (error) {
       return (
         <div className="flex items-center justify-between mt-1 h-8">
-          <p className="text-sm text-destructive font-medium">Unable to load data</p>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <p className="text-sm text-destructive font-medium">
+            Unable to load data
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleRetry}
             className="h-7 text-xs px-2"
           >
@@ -84,7 +91,7 @@ export function TotalProductsWidget() {
 
     return (
       <div className="text-2xl font-bold mt-1 h-8 flex items-center">
-        {totalProducts.toLocaleString('en-IN')}
+        {totalProducts.toLocaleString("en-IN")}
       </div>
     );
   };
@@ -99,9 +106,7 @@ export function TotalProductsWidget() {
           <Package className="h-4 w-4 text-orange-500" />
         </div>
       </CardHeader>
-      <CardContent>
-        {renderContent()}
-      </CardContent>
+      <CardContent>{renderContent()}</CardContent>
     </Card>
   );
 }

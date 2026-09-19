@@ -1,23 +1,39 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/core/components/ui/card';
-import { Input } from '@/core/components/ui/input';
-import { Button } from '@/core/components/ui/button';
-import { Search, ShoppingCart, CreditCard, Loader2, AlertCircle, Minus, Plus, Trash2, X } from 'lucide-react';
-import type { Product } from '@/types/product';
-import type { Customer } from '@/types/customer';
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/core/components/ui/card";
+import { Input } from "@/core/components/ui/input";
+import { Button } from "@/core/components/ui/button";
+import {
+  Search,
+  ShoppingCart,
+  CreditCard,
+  Loader2,
+  AlertCircle,
+  Minus,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react";
+import type { Product } from "@/types/product";
+import type { Customer } from "@/types/customer";
 
 interface CartItem {
   product: Product;
   quantity: number;
 }
-import { formatPaiseToRupees } from '@/lib/money';
-import { searchProducts } from '@/services/products';
-import { searchCustomers } from '@/services/customers';
+import { formatPaiseToRupees } from "@/lib/money";
+import { searchProducts } from "@/services/products";
+import { searchCustomers } from "@/services/customers";
 
 export function Checkout() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
@@ -39,29 +55,35 @@ export function Checkout() {
         setSearchError(null);
         return;
       }
-      
+
       setIsSearching(true);
       setSearchError(null);
-      
+
       try {
         const results = await searchProducts(debouncedQuery);
         setSearchResults(results);
       } catch (err) {
-        setSearchError(err instanceof Error ? err.message : 'An error occurred during search');
+        setSearchError(
+          err instanceof Error
+            ? err.message
+            : "An error occurred during search",
+        );
       } finally {
         setIsSearching(false);
       }
     }
-    
+
     performSearch();
   }, [debouncedQuery, searchTrigger]);
-  
-  const [customerSearch, setCustomerSearch] = useState('');
-  const [debouncedCustomerSearch, setDebouncedCustomerSearch] = useState('');
+
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [debouncedCustomerSearch, setDebouncedCustomerSearch] = useState("");
   const [customerResults, setCustomerResults] = useState<Customer[]>([]);
   const [isSearchingCustomer, setIsSearchingCustomer] = useState(false);
   const [customerError, setCustomerError] = useState<string | null>(null);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null,
+  );
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
 
   useEffect(() => {
@@ -86,7 +108,9 @@ export function Checkout() {
         const results = await searchCustomers(debouncedCustomerSearch);
         setCustomerResults(results);
       } catch (err) {
-        setCustomerError(err instanceof Error ? err.message : 'Error searching customers');
+        setCustomerError(
+          err instanceof Error ? err.message : "Error searching customers",
+        );
       } finally {
         setIsSearchingCustomer(false);
       }
@@ -95,46 +119,57 @@ export function Checkout() {
     performCustomerSearch();
   }, [debouncedCustomerSearch]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'upi' | 'card'>('cash');
-  const [amountPaidInput, setAmountPaidInput] = useState<string>('');
-
-
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "upi" | "card">(
+    "cash",
+  );
+  const [amountPaidInput, setAmountPaidInput] = useState<string>("");
 
   const addToCart = (product: Product) => {
-    setCartItems(prev => {
-      const existing = prev.find(item => item.product.id === product.id);
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
-        return prev.map(item => item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+        return prev.map((item) =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        );
       }
       return [...prev, { product, quantity: 1 }];
     });
   };
 
   const updateQuantity = (productId: string, delta: number) => {
-    setCartItems(prev => prev.map(item => {
-      if (item.product.id === productId) {
-        return { ...item, quantity: Math.max(1, item.quantity + delta) };
-      }
-      return item;
-    }));
+    setCartItems((prev) =>
+      prev.map((item) => {
+        if (item.product.id === productId) {
+          return { ...item, quantity: Math.max(1, item.quantity + delta) };
+        }
+        return item;
+      }),
+    );
   };
 
   const removeFromCart = (productId: string) => {
-    setCartItems(prev => {
-      const newItems = prev.filter(item => item.product.id !== productId);
+    setCartItems((prev) => {
+      const newItems = prev.filter((item) => item.product.id !== productId);
       if (newItems.length === 0) {
-        setAmountPaidInput('');
-        setPaymentMethod('cash');
+        setAmountPaidInput("");
+        setPaymentMethod("cash");
       }
       return newItems;
     });
   };
-  
-  const subtotalMinor = cartItems.reduce((sum, item) => sum + (item.product.priceMinor * item.quantity), 0);
+
+  const subtotalMinor = cartItems.reduce(
+    (sum, item) => sum + item.product.priceMinor * item.quantity,
+    0,
+  );
   const taxAmountMinor = 0;
   const totalAmountMinor = subtotalMinor + taxAmountMinor;
 
-  const amountPaidMinor = amountPaidInput ? Math.round(parseFloat(amountPaidInput) * 100) || 0 : 0;
+  const amountPaidMinor = amountPaidInput
+    ? Math.round(parseFloat(amountPaidInput) * 100) || 0
+    : 0;
   const remainingMinor = Math.max(0, totalAmountMinor - amountPaidMinor);
   const changeMinor = Math.max(0, amountPaidMinor - totalAmountMinor);
 
@@ -145,7 +180,7 @@ export function Checkout() {
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold tracking-tight">Checkout</h1>
         </div>
-        
+
         <Card className="flex-1 flex flex-col">
           <CardHeader>
             <CardTitle className="text-lg">Add Products</CardTitle>
@@ -161,12 +196,15 @@ export function Checkout() {
           </CardHeader>
           <CardContent className="flex-1 overflow-y-auto">
             {/* Initial/empty search state */}
-            {!debouncedQuery.trim() && !isSearching && searchResults.length === 0 && !searchError && (
-              <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
-                <Search className="mb-4 h-12 w-12 opacity-20" />
-                <p>Search for a product to add to cart</p>
-              </div>
-            )}
+            {!debouncedQuery.trim() &&
+              !isSearching &&
+              searchResults.length === 0 &&
+              !searchError && (
+                <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
+                  <Search className="mb-4 h-12 w-12 opacity-20" />
+                  <p>Search for a product to add to cart</p>
+                </div>
+              )}
 
             {/* Loading state */}
             {isSearching && (
@@ -181,24 +219,30 @@ export function Checkout() {
               <div className="flex h-full flex-col items-center justify-center text-destructive">
                 <AlertCircle className="mb-4 h-8 w-8 opacity-80" />
                 <p className="mb-4">{searchError}</p>
-                <Button variant="outline" onClick={() => setSearchTrigger(prev => prev + 1)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setSearchTrigger((prev) => prev + 1)}
+                >
                   Retry Search
                 </Button>
               </div>
             )}
 
             {/* No results state */}
-            {!isSearching && debouncedQuery.trim() && searchResults.length === 0 && !searchError && (
-              <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
-                <p>No products found for "{debouncedQuery}"</p>
-              </div>
-            )}
+            {!isSearching &&
+              debouncedQuery.trim() &&
+              searchResults.length === 0 &&
+              !searchError && (
+                <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
+                  <p>No products found for "{debouncedQuery}"</p>
+                </div>
+              )}
 
             {/* Matching results */}
             {!isSearching && searchResults.length > 0 && !searchError && (
               <div className="space-y-2">
                 {searchResults.map((product) => (
-                  <div 
+                  <div
                     key={product.id}
                     className="flex items-center justify-between rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
                     onClick={() => addToCart(product)}
@@ -208,7 +252,9 @@ export function Checkout() {
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                         {product.sku && <span>SKU: {product.sku}</span>}
                         {product.sku && product.barcode && <span>•</span>}
-                        {product.barcode && <span>Code: {product.barcode}</span>}
+                        {product.barcode && (
+                          <span>Code: {product.barcode}</span>
+                        )}
                       </div>
                     </div>
                     <div className="text-right">
@@ -238,9 +284,18 @@ export function Checkout() {
               <div className="flex items-center justify-between rounded-md border p-3 bg-muted/30">
                 <div>
                   <p className="font-medium text-sm">{selectedCustomer.name}</p>
-                  <p className="text-xs text-muted-foreground">{selectedCustomer.phone || selectedCustomer.email || 'No contact info'}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedCustomer.phone ||
+                      selectedCustomer.email ||
+                      "No contact info"}
+                  </p>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => setSelectedCustomer(null)} className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedCustomer(null)}
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -256,40 +311,56 @@ export function Checkout() {
                     setShowCustomerDropdown(true);
                   }}
                   onFocus={() => setShowCustomerDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowCustomerDropdown(false), 200)}
+                  onBlur={() =>
+                    setTimeout(() => setShowCustomerDropdown(false), 200)
+                  }
                 />
 
                 {showCustomerDropdown && customerSearch.trim() && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-popover text-popover-foreground border rounded-md shadow-md z-50 max-h-48 overflow-y-auto">
                     {isSearchingCustomer && (
-                      <div className="p-3 text-center text-sm text-muted-foreground">Searching...</div>
-                    )}
-                    {!isSearchingCustomer && customerError && (
-                      <div className="p-3 text-center text-sm text-destructive">{customerError}</div>
-                    )}
-                    {!isSearchingCustomer && !customerError && customerResults.length === 0 && (
-                      <div className="p-3 text-center text-sm text-muted-foreground">No customers found.</div>
-                    )}
-                    {!isSearchingCustomer && !customerError && customerResults.length > 0 && (
-                      <div className="py-1">
-                        {customerResults.map(customer => (
-                          <div
-                            key={customer.id}
-                            className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
-                            onClick={() => {
-                              setSelectedCustomer(customer);
-                              setCustomerSearch('');
-                              setShowCustomerDropdown(false);
-                            }}
-                          >
-                            <p className="font-medium">{customer.name}</p>
-                            {(customer.phone || customer.email) && (
-                              <p className="text-xs text-muted-foreground">{customer.phone} {customer.phone && customer.email ? '•' : ''} {customer.email}</p>
-                            )}
-                          </div>
-                        ))}
+                      <div className="p-3 text-center text-sm text-muted-foreground">
+                        Searching...
                       </div>
                     )}
+                    {!isSearchingCustomer && customerError && (
+                      <div className="p-3 text-center text-sm text-destructive">
+                        {customerError}
+                      </div>
+                    )}
+                    {!isSearchingCustomer &&
+                      !customerError &&
+                      customerResults.length === 0 && (
+                        <div className="p-3 text-center text-sm text-muted-foreground">
+                          No customers found.
+                        </div>
+                      )}
+                    {!isSearchingCustomer &&
+                      !customerError &&
+                      customerResults.length > 0 && (
+                        <div className="py-1">
+                          {customerResults.map((customer) => (
+                            <div
+                              key={customer.id}
+                              className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
+                              onClick={() => {
+                                setSelectedCustomer(customer);
+                                setCustomerSearch("");
+                                setShowCustomerDropdown(false);
+                              }}
+                            >
+                              <p className="font-medium">{customer.name}</p>
+                              {(customer.phone || customer.email) && (
+                                <p className="text-xs text-muted-foreground">
+                                  {customer.phone}{" "}
+                                  {customer.phone && customer.email ? "•" : ""}{" "}
+                                  {customer.email}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                   </div>
                 )}
               </div>
@@ -313,15 +384,25 @@ export function Checkout() {
               </div>
             ) : (
               <div className="space-y-4">
-                {cartItems.map(item => (
-                  <div key={item.product.id} className="flex flex-col gap-2 rounded-lg border p-3">
+                {cartItems.map((item) => (
+                  <div
+                    key={item.product.id}
+                    className="flex flex-col gap-2 rounded-lg border p-3"
+                  >
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-medium text-sm">{item.product.name}</h4>
-                        <div className="text-muted-foreground text-xs">{formatPaiseToRupees(item.product.priceMinor)} x {item.quantity}</div>
+                        <h4 className="font-medium text-sm">
+                          {item.product.name}
+                        </h4>
+                        <div className="text-muted-foreground text-xs">
+                          {formatPaiseToRupees(item.product.priceMinor)} x{" "}
+                          {item.quantity}
+                        </div>
                       </div>
                       <div className="font-semibold text-sm">
-                        {formatPaiseToRupees(item.product.priceMinor * item.quantity)}
+                        {formatPaiseToRupees(
+                          item.product.priceMinor * item.quantity,
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-2">
@@ -334,7 +415,9 @@ export function Checkout() {
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
-                        <div className="text-sm font-medium w-8 text-center">{item.quantity}</div>
+                        <div className="text-sm font-medium w-8 text-center">
+                          {item.quantity}
+                        </div>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -373,29 +456,29 @@ export function Checkout() {
                 <span>{formatPaiseToRupees(totalAmountMinor)}</span>
               </div>
             </div>
-            
+
             {cartItems.length > 0 && (
               <div className="w-full space-y-4 pt-2 border-t">
                 <h3 className="font-medium">Payment Details</h3>
 
                 <div className="grid grid-cols-3 gap-2">
                   <Button
-                    variant={paymentMethod === 'cash' ? 'default' : 'outline'}
-                    onClick={() => setPaymentMethod('cash')}
+                    variant={paymentMethod === "cash" ? "default" : "outline"}
+                    onClick={() => setPaymentMethod("cash")}
                     size="sm"
                   >
                     Cash
                   </Button>
                   <Button
-                    variant={paymentMethod === 'upi' ? 'default' : 'outline'}
-                    onClick={() => setPaymentMethod('upi')}
+                    variant={paymentMethod === "upi" ? "default" : "outline"}
+                    onClick={() => setPaymentMethod("upi")}
                     size="sm"
                   >
                     UPI
                   </Button>
                   <Button
-                    variant={paymentMethod === 'card' ? 'default' : 'outline'}
-                    onClick={() => setPaymentMethod('card')}
+                    variant={paymentMethod === "card" ? "default" : "outline"}
+                    onClick={() => setPaymentMethod("card")}
                     size="sm"
                   >
                     Card
@@ -403,7 +486,9 @@ export function Checkout() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-sm text-muted-foreground">Amount Received (₹)</label>
+                  <label className="text-sm text-muted-foreground">
+                    Amount Received (₹)
+                  </label>
                   <Input
                     type="number"
                     min="0"
@@ -441,7 +526,11 @@ export function Checkout() {
               </div>
             )}
 
-            <Button size="lg" className="w-full mt-2" disabled={cartItems.length === 0}>
+            <Button
+              size="lg"
+              className="w-full mt-2"
+              disabled={cartItems.length === 0}
+            >
               <CreditCard className="mr-2 h-4 w-4" />
               Complete Sale
             </Button>

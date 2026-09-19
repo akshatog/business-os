@@ -1,5 +1,5 @@
-import { mockProducts } from '@/mocks/products';
-import type { Product } from '@/types/product';
+import { mockProducts } from "@/mocks/products";
+import type { Product } from "@/types/product";
 
 /**
  * Searches products by name, SKU, or barcode.
@@ -10,8 +10,8 @@ export async function searchProducts(query: string): Promise<Product[]> {
   await new Promise((resolve) => setTimeout(resolve, 400));
 
   // Simulate API failure randomly for error state testing
-  if (query.toLowerCase() === 'error') {
-    throw new Error('Simulated network error while searching products');
+  if (query.toLowerCase() === "error") {
+    throw new Error("Simulated network error while searching products");
   }
 
   const normalizedQuery = query.toLowerCase().trim();

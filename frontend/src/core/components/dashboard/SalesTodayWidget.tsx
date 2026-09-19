@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { getSalesToday } from "@/services/dashboard";
 import { formatPaiseToRupees } from "@/lib/money";
-import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/core/components/ui/card";
 import { Button } from "@/core/components/ui/button";
 import { IndianRupee } from "lucide-react";
 
@@ -12,7 +17,7 @@ export function SalesTodayWidget() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     getSalesToday()
       .then((data) => {
         if (isMounted) {
@@ -49,9 +54,9 @@ export function SalesTodayWidget() {
   const renderContent = () => {
     if (loading) {
       return (
-        <div 
-          className="h-8 w-1/2 bg-muted animate-pulse rounded mt-1" 
-          role="status" 
+        <div
+          className="h-8 w-1/2 bg-muted animate-pulse rounded mt-1"
+          role="status"
           aria-label="Loading Sales Today"
         >
           <span className="sr-only">Loading</span>
@@ -62,10 +67,12 @@ export function SalesTodayWidget() {
     if (error) {
       return (
         <div className="flex items-center justify-between mt-1 h-8">
-          <p className="text-sm text-destructive font-medium">Unable to load data</p>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <p className="text-sm text-destructive font-medium">
+            Unable to load data
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleRetry}
             className="h-7 text-xs px-2"
           >
@@ -78,7 +85,9 @@ export function SalesTodayWidget() {
     if (salesPaise === null) {
       return (
         <div className="flex items-center mt-1 h-8">
-          <p className="text-sm text-muted-foreground">No sales data available</p>
+          <p className="text-sm text-muted-foreground">
+            No sales data available
+          </p>
         </div>
       );
     }
@@ -100,9 +109,7 @@ export function SalesTodayWidget() {
           <IndianRupee className="h-4 w-4 text-primary" />
         </div>
       </CardHeader>
-      <CardContent>
-        {renderContent()}
-      </CardContent>
+      <CardContent>{renderContent()}</CardContent>
     </Card>
   );
 }

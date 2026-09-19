@@ -20,7 +20,9 @@ export async function fetchMockBusiness(): Promise<Business> {
   });
 }
 
-export async function updateMockBusiness(data: Partial<Business>): Promise<Business> {
+export async function updateMockBusiness(
+  data: Partial<Business>,
+): Promise<Business> {
   return new Promise((resolve) => {
     setTimeout(() => {
       mockBusiness = { ...mockBusiness, ...data };

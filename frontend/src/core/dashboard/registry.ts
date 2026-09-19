@@ -15,7 +15,7 @@ export interface DashboardWidget {
  */
 export function composeDashboardWidgets(
   coreWidgets: DashboardWidget[],
-  moduleWidgets: DashboardWidget[]
+  moduleWidgets: DashboardWidget[],
 ): DashboardWidget[] {
   return [...coreWidgets, ...moduleWidgets].sort((a, b) => {
     const priorityA = a.priority ?? 999;

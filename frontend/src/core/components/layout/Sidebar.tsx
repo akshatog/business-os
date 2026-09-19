@@ -1,6 +1,6 @@
-import { NavLink } from 'react-router-dom';
-import { Home, Settings, LayoutDashboard, ShoppingCart } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { NavLink } from "react-router-dom";
+import { Home, Settings, LayoutDashboard, ShoppingCart } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   onNavigate?: () => void;
@@ -8,10 +8,10 @@ interface SidebarProps {
 
 export function Sidebar({ onNavigate }: SidebarProps = {}) {
   const navigation = [
-    { name: 'Dashboard', href: '/app', icon: Home },
-    { name: 'Checkout', href: '/app/checkout', icon: ShoppingCart },
-    { name: 'Settings', href: '/app/settings', icon: Settings },
-    { name: 'Design System', href: '/design-system', icon: LayoutDashboard },
+    { name: "Dashboard", href: "/app", icon: Home },
+    { name: "Checkout", href: "/app/checkout", icon: ShoppingCart },
+    { name: "Settings", href: "/app/settings", icon: Settings },
+    { name: "Design System", href: "/design-system", icon: LayoutDashboard },
   ];
 
   return (
@@ -29,12 +29,12 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
               className={({ isActive }) =>
                 cn(
                   isActive
-                    ? 'bg-white/10 text-white'
-                    : 'text-sidebar-foreground/80 hover:bg-white/5 hover:text-white',
-                  'group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors'
+                    ? "bg-white/10 text-white"
+                    : "text-sidebar-foreground/80 hover:bg-white/5 hover:text-white",
+                  "group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 )
               }
-              end={item.href === '/app'}
+              end={item.href === "/app"}
             >
               <item.icon
                 className="mr-3 h-5 w-5 flex-shrink-0"
@@ -52,7 +52,9 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
           </div>
           <div>
             <p className="font-medium">Jane Smith</p>
-            <p className="text-xs text-sidebar-foreground/60">jane@example.com</p>
+            <p className="text-xs text-sidebar-foreground/60">
+              jane@example.com
+            </p>
           </div>
         </div>
       </div>
